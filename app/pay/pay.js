@@ -1733,7 +1733,7 @@ export default class Clean extends Component {
                                     </View>
 
                                     <View style={{marginTop: 10, alignItems:'center'}}>
-                                        <Text style={{color:'#ff7000', fontSize: 12, textAlign: 'center'}}>tips:不可叠加、部分叠加、无限叠加不可同时使用</Text>
+                                        <Text style={{color:'#ff7000', fontSize: 12, textAlign: 'center'}}>tips:不可叠加、部分叠加、无限叠加在同一种费用类型下不可同时使用</Text>
                                     </View>
 
                                     <View style={{padding:10}}>
@@ -1741,7 +1741,7 @@ export default class Clean extends Component {
                                         <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
                                             <View>
                                                 {
-                                                    typeData.feeNames && typeData.feeNames.map(result => {
+                                                    typeData.feeNames && typeData.feeNames.map((result,index) => {
                                                         let num = 0;
                                                         typeData[result.feeName].length > 0 && typeData[result.feeName].map(item => {
                                                             if(item.flag) {
@@ -1749,7 +1749,7 @@ export default class Clean extends Component {
                                                             }
                                                         });
                                                         return (
-                                                            <View style={{paddingTop:10, paddingBottom: 10}}>
+                                                            <View style={{paddingTop:10, paddingBottom: 10}} key={index}>
                                                                 <Text style={{fontSize: 14, fontWeight: 'normal'}}><Text style={{fontSize: 16}}>{result.feeName}</Text>：共计优惠<Text style={{color:'red'}}>{num}元</Text></Text>
                                                                 <View style={{flexDirection:"row",flexWrap:"wrap"}}>
                                                                     {

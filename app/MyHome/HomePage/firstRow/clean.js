@@ -8,7 +8,7 @@ import {
     View,
     Image,
     TextInput,
-    Platform
+    ScrollView
 
 } from 'react-native';
 
@@ -57,52 +57,30 @@ export default class Clean extends Component {
             text:"",
             evaluationText:"",
             code:3,
-            starCode:3,
+            starCode:0,
             flag:false,
             params:{},
             count:1,
             status:null,
             noOneStr:null,
-            margintop:0
+            padd:0
 
 
         };
     }
 
 
-    componentWillUnmount () {
-        this.keyboardDidShowListener&&this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener&&this.keyboardDidHideListener.remove();
-    }
 
-
-
-    _keyboardDidShow =()=> {
-        this.setState({
-            margintop:-130
-        })
-    }
-
-    _keyboardDidHide =()=> {
-        this.setState({
-            margintop:0
-        })
-    }
 
 
     focus=()=>{
 
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', ()=>{this._keyboardDidShow()});
-
-
-    }
-
-    blur=()=>{
-
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', ()=>{this._keyboardDidHide()});
-
+        this.setState({
+            padd:Dimensions.get('window').height/2+100
+        })
 
     }
+
 
 
     componentWillMount() {
@@ -353,6 +331,13 @@ export default class Clean extends Component {
         if(this.state.flag){
             Toast.info('已提交评价，不可重复提交',1)
         }else{
+
+
+            if(starCode==0){
+                Toast.info('请点亮星星进行评价',1)
+                return
+            }
+
             axios.post(`/tenant/submitCleanup`, {
                 cleanupId: param.data[0].cleanupId,
                 star:starCode,
@@ -413,218 +398,216 @@ export default class Clean extends Component {
         return (
 
             <View style={{ alignItems: 'center',backgroundColor:"#fff",height: Dimensions.get('window').height,}}>
-                <View  style={{marginTop:this.state.margintop}}>
-                    <View  style={{backgroundColor:"#fff"}}>
-                        <WhiteSpace size="xl"/>
-                        {/*<View style={{alignItems:"flex-end"}}>*/}
-                            {/*<TouchableHighlight style={{marginLeft:"26%"}} onPress={this.showHistory}>*/}
-                                {/*<Text style={{textDecorationLine:"underline"}}>保洁历史</Text>*/}
-                            {/*</TouchableHighlight>*/}
-                        {/*</View>*/}
-                        {/*<WhiteSpace size="xl"/>*/}
 
-                        {
-                            this.state.code == 1 ? (
-                        // 预约保洁
-                        <View>
-                            <View>
-                                <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}><Text>保洁政策：</Text></View>
-                                <WhiteSpace size="lg"/>
-                                <Text style={{color:"grey"}}>一个月免费保洁两次，超过按次收费</Text>
 
-                                <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
-                                <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}>
-                                    <Text>本月第{this.state.count}次保洁</Text>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        <View  style={{paddingBottom:this.state.padd}}>
+                            <View  style={{backgroundColor:"#fff"}}>
+                                <WhiteSpace size="xl"/>
+
+                                {
+                                    this.state.code == 1 ? (
+                                // 预约保洁
+                                <View>
+                                    <View>
+                                        <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}><Text>保洁政策：</Text></View>
+                                        <WhiteSpace size="lg"/>
+                                        <Text style={{color:"grey"}}>一个月免费保洁两次，超过按次收费</Text>
+
+                                        <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
+                                        <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}>
+                                            <Text>本月第{this.state.count}次保洁</Text>
+                                        </View>
+                                        <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
+
+                                        <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}><Text>无人可进房间保洁:</Text></View>
+                                        <WhiteSpace size="lg"/>
+                                        <View style={{flexDirection:"row",flexWrap:"wrap"}}>
+
+                                            {
+                                                this.state.noOneStatus.map((item,index)=>
+                                                    <TouchableHighlight
+                                                        onPress={()=>{this.noOneStatus(item)}} key={index} underlayColor="transparent">
+                                                        <View style={{flexDirection:"row",marginRight:15,alignItems:"center"}}>
+                                                            <View style={{backgroundColor:item.flag ? "#f17e3a" :'#fff',marginRight:5,
+                                                                width:20,height:20,borderRadius:10,borderColor:"#ccc",borderWidth:1,overflow:"hidden"}} >
+                                                                <Image style={{width:20,height:20}} source={selectIcon}/>
+                                                            </View>
+                                                            <Text>{item.value}</Text>
+
+                                                        </View>
+                                                    </TouchableHighlight>
+                                                )
+                                            }
+
+
+
+                                        </View>
+                                        <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
+
+
+
+                                        <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}><Text>请选择保洁日期:</Text></View>
+                                        <WhiteSpace size="lg"/>
+                                        <View>
+                                            <DatePicker
+                                                value={this.state.date}
+                                                extra=""
+                                                format={val => formatDate(val)}
+                                                minDate={minDate}
+                                                onChange={date => this.setState({date})}
+                                            >
+                                                <CustomChildren></CustomChildren>
+                                            </DatePicker>
+                                        </View>
+                                        <WhiteSpace size="lg"/>
+                                    </View>
+
+
+                                    <View>
+                                        <View>
+                                            <TextInput
+                                                underlineColorAndroid="transparent"
+                                                multiline={true}
+                                                style={{height: 90,width:300,
+                                                    borderColor:"grey",borderWidth:1,padding: 0,
+                                                    borderRadius:5}}
+                                                placeholder="请填写保洁内容"
+                                                onFocus={this.focus}
+                                                onChangeText={(text) => this.setState({text})}
+                                            />
+
+                                        </View>
+
+
+
+                                        <View style={{alignItems:"center",marginTop:30}}>
+
+                                            {
+                                                flag?<TouchableHighlight underlayColor={"#fff"} style={{padding:8,
+                                                        borderWidth:1,borderColor:"#000",width:100,backgroundColor:"#fff",
+                                                        borderRadius:5}} onPress={this.noRepeat }>
+                                                        <Text
+
+                                                            style={{textAlign:"center",color:"#f0f0f0"}}>
+                                                            确定
+                                                        </Text>
+                                                    </TouchableHighlight>
+                                                    :
+                                                    <TouchableHighlight underlayColor={"#fff"} style={{alignItems:"center",padding:8,
+                                                        borderWidth:1,borderColor:"#fff",backgroundColor:"#f17e3a",width:100,
+                                                        borderRadius:5}} onPress={this.submitBtn }>
+                                                        <Text
+                                                            style={{textAlign:"center",color:"#fff"}}>
+                                                            确定
+                                                        </Text>
+                                                    </TouchableHighlight>
+                                            }
+
+
+                                        </View>
+
+                                    </View>
                                 </View>
-                                <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
+                                        ) : this.state.code == 2 ? (
 
-                                <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}><Text>无人可进房间保洁:</Text></View>
-                                <WhiteSpace size="lg"/>
-                                <View style={{flexDirection:"row",flexWrap:"wrap"}}>
+                                // 等待保洁
+                                <View style={{padding:10}}>
 
                                     {
-                                        this.state.noOneStatus.map((item,index)=>
-                                            <TouchableHighlight
-                                                onPress={()=>{this.noOneStatus(item)}} key={index} underlayColor="transparent">
-                                                <View style={{flexDirection:"row",marginRight:15,alignItems:"center"}}>
-                                                    <View style={{backgroundColor:item.flag ? "#f17e3a" :'#fff',marginRight:5,
-                                                        width:20,height:20,borderRadius:10,borderColor:"#ccc",borderWidth:1,overflow:"hidden"}} >
-                                                        <Image style={{width:20,height:20}} source={selectIcon}/>
-                                                    </View>
-                                                    <Text>{item.value}</Text>
+                                        this.state.status == "0" ?
+                                    (<View>
 
-                                                </View>
-                                            </TouchableHighlight>
-                                        )
+                                        <Text>「等待接受请求」</Text>
+                                        <WhiteSpace size="xl"/>
+                                    </View>):
+                                    (<View>
+                                        <Text>{`保洁人员已经接受请求，将于${params[0].comeDate}上门保洁。`}</Text>
+                                        {/*<Text>保洁人员已经接受请求，将于上门保洁。</Text>*/}
+                                        <WhiteSpace size="xl"/>
+                                        <Text>「等待上门保洁」</Text>
+                                        <WhiteSpace size="xl"/>
+                                    </View>)
                                     }
 
 
 
+                                    <View  style={{alignItems:"center"}}>
+
+                                        <TouchableHighlight underlayColor={flag ? "#fff" : "#367d80"} style={{padding:10,
+                                            borderWidth:1,borderColor:flag ? "#000" : "#fff",width:100,backgroundColor:flag ? "#fff" : "#f17e3a",
+                                            borderRadius:10}} onPress={this.undoBtn }>
+                                            <Text
+
+                                                style={{fontSize:16,textAlign:"center",color:flag ? "#f0f0f0":"#fff"}}>
+                                                撤销
+                                            </Text>
+                                        </TouchableHighlight>
+
+
+
+                                    </View>
+
                                 </View>
-                                <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
+                                    ) : (
 
-
-
-                                <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}><Text>请选择保洁日期:</Text></View>
-                                <WhiteSpace size="lg"/>
+                                // 待评价
                                 <View>
-                                    <DatePicker
-                                        value={this.state.date}
-                                        extra=""
-                                        format={val => formatDate(val)}
-                                        minDate={minDate}
-                                        onChange={date => this.setState({date})}
-                                    >
-                                        <CustomChildren></CustomChildren>
-                                    </DatePicker>
-                                </View>
-                                <WhiteSpace size="lg"/>
-                            </View>
+                                    {params[0].butlerMsg?<Text style={{fontSize:16}}>管家留言:{params[0].butlerMsg}</Text>:null}
+                                    <Text style={{fontSize:16,marginTop:10}}>保洁已经完成，请对结果进行评价</Text>
 
+                                    <WhiteSpace size="xl"/>
+                                        {/*星星评价*/}
+                                        <ScoreAction scoreCode={0} disabled={false} handleGetScore={this.handelGetScore}/>
 
-                            <View>
-                                <View>
-                                    <TextInput
-                                        underlineColorAndroid="transparent"
-                                        multiline={true}
-                                        style={{height: 90,width:300,
-                                            borderColor:"grey",borderWidth:1,padding: 0,
-                                            borderRadius:5}}
-                                        placeholder="请填写保洁内容"
-                                        onFocus={this.focus}
-                                        onBlur={this.blur}
-                                        onChangeText={(text) => this.setState({text})}
-                                    />
+                                    <WhiteSpace size="lg"/>
+                                    <View>
+                                        <View>
+                                            <TextInput
+                                                multiline={false}
+                                                style={{height: 90,width:300,
+                                                    borderColor:"grey",borderWidth:1,
+                                                    borderRadius:5}}
 
-                                </View>
+                                                placeholder="请填写评价内容"
+                                                onChangeText={(evaluationText) => this.setState({evaluationText})}
+                                            />
 
+                                        </View>
+                                        <WhiteSpace size="lg"/>
 
+                                        <View style={{alignItems:"center"}}>
 
-                                <View style={{alignItems:"center",marginTop:30}}>
-
-                                    {
-                                        flag?<TouchableHighlight underlayColor={"#fff"} style={{padding:8,
-                                                borderWidth:1,borderColor:"#000",width:100,backgroundColor:"#fff",
-                                                borderRadius:5}} onPress={this.noRepeat }>
+                                            <TouchableHighlight underlayColor={flag ? "#fff" : "#367d80"} style={{padding:10,
+                                                borderWidth:1,borderColor:flag ? "#000" : "#fff",width:100,backgroundColor:flag ? "#fff" : "#f17e3a",
+                                                borderRadius:10}} onPress={this.evaluationBtn }>
                                                 <Text
 
-                                                    style={{textAlign:"center",color:"#f0f0f0"}}>
+                                                    style={{fontSize:16,textAlign:"center",color:flag ? "#f0f0f0":"#fff"}}>
                                                     确定
                                                 </Text>
                                             </TouchableHighlight>
-                                            :
-                                            <TouchableHighlight underlayColor={"#fff"} style={{alignItems:"center",padding:8,
-                                                borderWidth:1,borderColor:"#fff",backgroundColor:"#f17e3a",width:100,
-                                                borderRadius:5}} onPress={this.submitBtn }>
-                                                <Text
-                                                    style={{textAlign:"center",color:"#fff"}}>
-                                                    确定
-                                                </Text>
-                                            </TouchableHighlight>
-                                    }
 
+                                            {/*<TouchableHighlight underlayColor={"#f0f0f0"} style={{padding:10,*/}
+                                                {/*borderWidth:1,borderColor:"grey",width:100,*/}
+                                                {/*borderRadius:10}} onPress={this.evaluationBtn }>*/}
+                                                {/*<Text*/}
 
-                                </View>
+                                                    {/*style={{fontSize:16,textAlign:"center",color:"#000"}}>*/}
+                                                    {/*确定*/}
+                                                {/*</Text>*/}
+                                            {/*</TouchableHighlight>*/}
+                                        </View>
 
-                            </View>
-                        </View>
-                                ) : this.state.code == 2 ? (
-
-                        // 等待保洁
-                        <View style={{padding:10}}>
-
-                            {
-                                this.state.status == "0" ?
-                            (<View>
-
-                                <Text>「等待接受请求」</Text>
-                                <WhiteSpace size="xl"/>
-                            </View>):
-                            (<View>
-                                <Text>{`保洁人员已经接受请求，将于${params[0].comeDate}上门保洁。`}</Text>
-                                {/*<Text>保洁人员已经接受请求，将于上门保洁。</Text>*/}
-                                <WhiteSpace size="xl"/>
-                                <Text>「等待上门保洁」</Text>
-                                <WhiteSpace size="xl"/>
-                            </View>)
-                            }
-
-
-
-                            <View  style={{alignItems:"center"}}>
-
-                                <TouchableHighlight underlayColor={flag ? "#fff" : "#367d80"} style={{padding:10,
-                                    borderWidth:1,borderColor:flag ? "#000" : "#fff",width:100,backgroundColor:flag ? "#fff" : "#f17e3a",
-                                    borderRadius:10}} onPress={this.undoBtn }>
-                                    <Text
-
-                                        style={{fontSize:16,textAlign:"center",color:flag ? "#f0f0f0":"#fff"}}>
-                                        撤销
-                                    </Text>
-                                </TouchableHighlight>
-
-
-
-                            </View>
-
-                        </View>
-                            ) : (
-
-                        // 待评价
-                        <View>
-                            {params[0].butlerMsg?<Text style={{fontSize:16,color:"grey"}}>管家留言:{params[0].butlerMsg}</Text>:null}
-                            <Text style={{fontSize:16,marginTop:10}}>保洁已经完成，请对结果进行评价</Text>
-
-                            <WhiteSpace size="xl"/>
-                                {/*星星评价*/}
-                                <ScoreAction scoreCode={3} disabled={false} handleGetScore={this.handelGetScore}/>
-
-                            <WhiteSpace size="lg"/>
-                            <View>
-                                <View>
-                                    <TextInput
-                                        multiline={false}
-                                        style={{height: 90,width:300,
-                                            borderColor:"grey",borderWidth:1,
-                                            borderRadius:5}}
-
-                                        placeholder="请填写评价内容"
-                                        onChangeText={(evaluationText) => this.setState({evaluationText})}
-                                    />
+                                    </View>
 
                                 </View>
-                                <WhiteSpace size="lg"/>
-
-                                <View style={{alignItems:"center"}}>
-
-                                    <TouchableHighlight underlayColor={flag ? "#fff" : "#367d80"} style={{padding:10,
-                                        borderWidth:1,borderColor:flag ? "#000" : "#fff",width:100,backgroundColor:flag ? "#fff" : "#f17e3a",
-                                        borderRadius:10}} onPress={this.evaluationBtn }>
-                                        <Text
-
-                                            style={{fontSize:16,textAlign:"center",color:flag ? "#f0f0f0":"#fff"}}>
-                                            确定
-                                        </Text>
-                                    </TouchableHighlight>
-
-                                    {/*<TouchableHighlight underlayColor={"#f0f0f0"} style={{padding:10,*/}
-                                        {/*borderWidth:1,borderColor:"grey",width:100,*/}
-                                        {/*borderRadius:10}} onPress={this.evaluationBtn }>*/}
-                                        {/*<Text*/}
-
-                                            {/*style={{fontSize:16,textAlign:"center",color:"#000"}}>*/}
-                                            {/*确定*/}
-                                        {/*</Text>*/}
-                                    {/*</TouchableHighlight>*/}
-                                </View>
-
+                                    )
+                                }
                             </View>
-
                         </View>
-                            )
-                        }
-                    </View>
-                </View>
+                    </ScrollView>
+
             </View>
         );
     }

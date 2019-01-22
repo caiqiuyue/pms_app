@@ -104,10 +104,10 @@ export default class Mine extends React.Component {
 
                 })
                     .then( (response)=> {
-                        Toast.info('成功提交',1);
+                        Toast.info(response.data.code==0?'成功提交':response.data.message,1);
                         console.log(response,'银行卡');
                         this.setState({
-                            flag:true
+                            flag:response.data.code==0?true:false
                         })
                     })
                     .catch(function (error) {
@@ -184,7 +184,7 @@ export default class Mine extends React.Component {
                                     <MyTextInput
                                         style={{padding: 0,}}
                                         placeholder={this.state.username?this.state.username:"请输入姓名"}
-
+                                        placeholderTextColor={this.state.username?"#000":'#ccc'}
                                         // value={this.state.username}
                                         // keyboardType='numeric'
                                         underlineColorAndroid="transparent"
@@ -207,7 +207,6 @@ export default class Mine extends React.Component {
                                         keyboardType='numeric'
                                         underlineColorAndroid="transparent"
                                         value={this.bankNumRep(cardNumber)}
-                                        // onChangeText={(cardNumber) => this.setState({cardNumber})}
                                         onChangeText={(cardNumber) => this.changeBankCard(cardNumber)}
                                     >
                                     </TextInput>

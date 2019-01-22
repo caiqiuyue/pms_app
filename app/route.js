@@ -50,6 +50,7 @@ import Withdrawalurl from './MyHome/Mine/withdrawalurl';
 import WalletDetail from './MyHome/Mine/walletDetail';
 import Withdrawal from './MyHome/Mine/withdrawal';
 import Coupons from './MyHome/Mine/coupons';
+import EmergencyContact from './MyHome/Mine/emergencyContact';
 import WalletPay from './pay/walletPay';
 
 
@@ -63,6 +64,20 @@ const SimpleApp = createStackNavigator({
         screen: UnBankCard,
         navigationOptions: {
             headerTitle:'解绑卡',
+            headerBackTitle:null,
+            headerStyle: {
+                backgroundColor: '#f17e3a'
+            },
+            headerTitleStyle: {
+                color: '#fff'
+            },
+            headerTintColor:"#fff"
+        }
+    },
+    EmergencyContact:{
+        screen: EmergencyContact,
+        navigationOptions: {
+            headerTitle:'紧急联系人',
             headerBackTitle:null,
             headerStyle: {
                 backgroundColor: '#f17e3a'

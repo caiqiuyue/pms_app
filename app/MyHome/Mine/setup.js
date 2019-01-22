@@ -20,7 +20,8 @@ export default class Mine extends React.Component {
         this.state={
             cardImg:null,
             cardImgList:[],
-            bankCardJson:null
+            bankCardJson:null,
+            emergencyJson:null,
         }
 
     }
@@ -36,6 +37,7 @@ export default class Mine extends React.Component {
                 console.log(response,'身份证审核');
                 let cardImg=response.data.cardImg;
                 let bankCardJson=response.data.bankCardJson;
+                let emergencyJson=response.data.emergencyJson;
 
                 if(cardImg!=null){
                     let cardImgList=cardImg.split(',');
@@ -49,7 +51,7 @@ export default class Mine extends React.Component {
 
                 this.setState({
                     cardImg,
-                    bankCardJson
+                    bankCardJson,emergencyJson
                 })
 
 
@@ -103,6 +105,11 @@ export default class Mine extends React.Component {
     safeSetup = ()=>{
         const { navigate } = this.props.navigation;
         navigate('ChangePhoneNum',{ user: "" });
+    }
+
+    triedCard = ()=>{
+        const { navigate } = this.props.navigation;
+        navigate('EmergencyContact',{ user: "" });
     }
 
 
@@ -194,18 +201,18 @@ export default class Mine extends React.Component {
                                     </View>
                                 </TouchableHighlight>
 
-                                {/*<TouchableHighlight onPress={this.triedCard} underlayColor="#f0f0f0" style={{borderBottomColor:"#f0f0f0",borderBottomWidth:2}}>*/}
-                                    {/*<View style={{marginTop:1,flexDirection:"row",backgroundColor:"#fff",padding:10,borderRadius:5,alignItems:"center"}}>*/}
-                                        {/*<View style={styles.imgView}><Image style={styles.img} source={triedCard}/></View>*/}
-                                        {/*<Text>绑卡设置</Text>*/}
-                                        {/*<View  style={{flex:1,justifyContent:'flex-end'}}>*/}
-                                            {/*<Text style={{textAlign:'right',color:"grey"}}>未设置</Text>*/}
-                                        {/*</View>*/}
-                                        {/*<View>*/}
-                                            {/*<Image style={styles.img2} source={right}/>*/}
-                                        {/*</View>*/}
-                                    {/*</View>*/}
-                                {/*</TouchableHighlight>*/}
+                                <TouchableHighlight onPress={this.triedCard} underlayColor="#f0f0f0" style={{borderBottomColor:"#f0f0f0",borderBottomWidth:2}}>
+                                    <View style={{marginTop:1,flexDirection:"row",backgroundColor:"#fff",padding:10,borderRadius:5,alignItems:"center"}}>
+                                        <View style={styles.imgView}><Image style={styles.img} source={triedCard}/></View>
+                                        <Text>紧急联系人</Text>
+                                        <View  style={{flex:1,justifyContent:'flex-end'}}>
+                                            <Text style={{textAlign:'right',color:"grey"}}>{this.state.emergencyJson?'已设置':'未设置'}</Text>
+                                        </View>
+                                        <View>
+                                            <Image style={styles.img2} source={right}/>
+                                        </View>
+                                    </View>
+                                </TouchableHighlight>
 
                             </View>
 

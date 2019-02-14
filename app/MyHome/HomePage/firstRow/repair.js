@@ -18,9 +18,11 @@ import {WhiteSpace,DatePicker,List,Toast} from 'antd-mobile';
 
 import axios from '../../../axios'
 import ScoreAction from './ScoreAction'
+
 import Dimensions from 'Dimensions'
 import selectIcon from '../../../pay/selectIcon.png'
 import s1 from '../../GoodSelect/style/234.png'
+import AddPic from './addPic'
 
 
 const CustomChildren = props => {
@@ -57,12 +59,13 @@ export default class Repair extends Component {
             evaluationText:"",
             code:3,
             starCode:0,
+            roomImg:"",
             flag:false,
             params:{},
             count:1,
             status:null,
             noOneStr:null,
-            padd:0
+            padd:100
 
         };
     }
@@ -197,7 +200,8 @@ export default class Repair extends Component {
                 axios.post(`/tenant/submitRepair`, {
                     content: text,
                     aboutDate:new Date(date).Format('yyyy-MM-dd hh:mm:ss'),
-                    noPerson:noOneStr
+                    noPerson:noOneStr,
+                    repairImg:this.state.roomImg
 
                 })
                     .then( (response)=> {
@@ -366,6 +370,23 @@ export default class Repair extends Component {
     };
 
 
+    //添加图片
+    addPic = (item)=>{
+        console.log(item);
+        let a = []
+        if(item.length>0){
+            item.map(_item=>{
+                a.push(_item.imgName)
+            })
+        }
+
+        this.setState({
+
+            roomImg:a.join(',')
+        })
+    }
+
+
     render() {
         //获取个人报修历史
         const {getParam} = this.props.navigation;
@@ -396,9 +417,9 @@ export default class Repair extends Component {
 
         return (
 
-            <View style={{ alignItems: 'center',backgroundColor:"#fff",height: Dimensions.get('window').height,}}>
+            <View style={{ alignItems: 'center',backgroundColor:"#fff",}}>
 
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{maxHeight:Dimensions.get('window').height}}>
                     <View  style={{paddingBottom:this.state.padd}}>
                         <View  style={{backgroundColor:"#fff"}}>
                             <WhiteSpace size="xl"/>
@@ -468,60 +489,48 @@ export default class Repair extends Component {
 
                                         </View>
                                         <WhiteSpace size="lg"/>
-                                        <View>
-                                            <View style={{alignItems:'center'}}>
-                                                <TextInput
-                                                    onFocus={this.focus}
-                                                    onBlur={this.blur}
-                                                    multiline={true}
-                                                    underlineColorAndroid="transparent"
-                                                    style={{height: 90,width:300,
-                                                        borderColor:"grey",borderWidth:1,padding:0,
-                                                        borderRadius:5}}
+                                        <View style={{alignItems:'center'}}>
+                                            <TextInput
+                                                onFocus={this.focus}
+                                                onBlur={this.blur}
+                                                multiline={true}
+                                                underlineColorAndroid="transparent"
+                                                style={{height: 90,width:300,
+                                                    borderColor:"grey",borderWidth:1,padding:0,
+                                                    borderRadius:5}}
 
-                                                    placeholder="请填写报修内容"
-                                                    onChangeText={(text) => this.setState({text})}
-                                                />
+                                                placeholder="请填写报修内容"
+                                                onChangeText={(text) => this.setState({text})}
+                                            />
 
-                                            </View>
+                                        </View>
 
-
-
-
-                                            <View style={{alignItems:"center",marginTop:30}}>
-
-                                                {
-                                                    flag?<TouchableHighlight underlayColor={"#fff"} style={{padding:8,
-                                                            borderWidth:1,borderColor:"#000",width:100,backgroundColor:"#fff",
-                                                            borderRadius:5}} onPress={this.noRepeat }>
-                                                            <Text
-
-                                                                style={{textAlign:"center",color:"#f0f0f0"}}>
-                                                                确定
-                                                            </Text>
-                                                        </TouchableHighlight>
-                                                        :
-                                                        <TouchableHighlight underlayColor={"#fff"} style={{alignItems:"center",padding:8,
-                                                            borderWidth:1,borderColor:"#fff",backgroundColor:"#f17e3a",width:100,
-                                                            borderRadius:5}} onPress={this.submitBtn }>
-                                                            <Text
-                                                                style={{textAlign:"center",color:"#fff"}}>
-                                                                确定
-                                                            </Text>
-                                                        </TouchableHighlight>
-                                                }
+                                        <AddPic addPic={this.addPic}/>
 
 
-                                                {/*<TouchableHighlight underlayColor={"#f0f0f0"} style={{padding:10,*/}
-                                                {/*borderWidth:1,borderColor:"grey",width:100,*/}
-                                                {/*borderRadius:10}} onPress={this.submitBtn }>*/}
-                                                {/*<Text*/}
 
-                                                {/*style={{fontSize:16,textAlign:"center",color:"#000"}}>*/}
-                                                {/*确定*/}
-                                                {/*</Text>*/}
-                                                {/*</TouchableHighlight>*/}
-                                            </View>
+                                        <View style={{alignItems:"center",marginTop:30}}>
+
+                                            {
+                                                flag?<TouchableHighlight underlayColor={"#fff"} style={{padding:8,
+                                                        borderWidth:1,borderColor:"#000",width:100,backgroundColor:"#fff",
+                                                        borderRadius:5}} onPress={this.noRepeat }>
+                                                        <Text
+
+                                                            style={{textAlign:"center",color:"#f0f0f0"}}>
+                                                            确定
+                                                        </Text>
+                                                    </TouchableHighlight>
+                                                    :
+                                                    <TouchableHighlight underlayColor={"#fff"} style={{alignItems:"center",padding:8,
+                                                        borderWidth:1,borderColor:"#fff",backgroundColor:"#f17e3a",width:100,
+                                                        borderRadius:5}} onPress={this.submitBtn }>
+                                                        <Text
+                                                            style={{textAlign:"center",color:"#fff"}}>
+                                                            确定
+                                                        </Text>
+                                                    </TouchableHighlight>
+                                            }
 
                                         </View>
                                     </View>

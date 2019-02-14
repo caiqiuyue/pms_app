@@ -22,6 +22,7 @@ import selectIcon from '../../../pay/selectIcon.png'
 import s1 from '../../GoodSelect/style/234.png'
 
 
+
 const CustomChildren = props => {
     return (
         <TouchableHighlight style={{}} underlayColor="transparent" onPress={props.onClick}>
@@ -55,6 +56,7 @@ export default class Clean extends Component {
             ],
             date:"",
             text:"",
+
             evaluationText:"",
             code:3,
             starCode:0,
@@ -197,7 +199,8 @@ export default class Clean extends Component {
                 axios.post(`/tenant/submitCleanup`, {
                     content: text,
                     aboutDate: new Date(date).Format('yyyy-MM-dd hh:mm:ss'),
-                    noPerson: noOneStr
+                    noPerson: noOneStr,
+
 
                 })
                     .then((response) => {
@@ -319,6 +322,9 @@ export default class Clean extends Component {
 
 
     }
+
+
+
 
 
     //评价
@@ -478,6 +484,8 @@ export default class Clean extends Component {
                                             />
 
                                         </View>
+
+
 
 
 

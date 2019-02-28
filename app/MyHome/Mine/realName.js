@@ -347,7 +347,7 @@ export default class Mine extends React.Component {
                         <View style={{padding:20}}>
 
                             <View style={{height:210,borderWidth:5,borderColor:"#f0f0f0"}}>
-                                <Image style={{height:200,width:"100%",resizeMode:"stretch"}}
+                                <Image style={{height:200,width:"100%",resizeMode:"contain"}}
                                        source={this.state.uri1=='' ? none : {uri:this.state.uri1}}
                                        />
                             </View>
@@ -362,7 +362,7 @@ export default class Mine extends React.Component {
 
 
                             <View style={{height:210,borderWidth:5,borderColor:"#f0f0f0"}}>
-                                <Image style={{height:200,width:"100%",resizeMode:"stretch"}}
+                                <Image style={{height:200,width:"100%",resizeMode:"contain"}}
                                        source={this.state.uri2=='' ? none : {uri:this.state.uri2}}
                                 />
                             </View>

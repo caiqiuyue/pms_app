@@ -14,6 +14,7 @@ import RefondRent from './MyHome/HomePage/thirdRow/refundRent';
 import ForRenewal from './MyHome/HomePage/thirdRow/forRenewal';
 import Sublet from './MyHome/HomePage/thirdRow/sublet';
 import ChangeRooms from './MyHome/HomePage/thirdRow/changeRooms';
+import Jumpto from './MyHome/HomePage/jumpto';
 import Water from './MyHome/HomePage/secondRow/water';
 import AllBills from './MyHome/HomePage/secondRow/allBills';
 import Bill from './MyHome/Mine/myBill';
@@ -64,6 +65,20 @@ const SimpleApp = createStackNavigator({
         screen: UnBankCard,
         navigationOptions: {
             headerTitle:'解绑卡',
+            headerBackTitle:null,
+            headerStyle: {
+                backgroundColor: '#f17e3a'
+            },
+            headerTitleStyle: {
+                color: '#fff'
+            },
+            headerTintColor:"#fff"
+        }
+    },
+    Jumpto:{
+        screen: Jumpto,
+        navigationOptions: {
+            headerTitle:'',
             headerBackTitle:null,
             headerStyle: {
                 backgroundColor: '#f17e3a'

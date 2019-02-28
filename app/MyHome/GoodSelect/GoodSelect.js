@@ -272,7 +272,7 @@ export default class GoodSelect extends Component {
 
                             <TouchableHighlight  style={{paddingTop:5,paddingLeft:10,paddingRight:10}} underlayColor="#fff" onPress={()=>this.selectItem(item)}>
                                 <View>
-                                    <View style={{height:150,overflow:"hidden",borderWidth:1,borderColor:"#fff",borderRadius:5}}>
+                                    <View style={{height:180,overflow:"hidden",borderWidth:1,borderColor:"#fff",borderRadius:5}}>
                                         <Image source={item.img=='' ? s2 : {uri:item.img.split(',')[0],cache: 'force-cache'}}
                                             style={{height:180, width: '100%', resizeMode:"stretch"}}
                                                />

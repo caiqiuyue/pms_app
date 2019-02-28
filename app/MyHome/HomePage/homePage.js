@@ -24,7 +24,8 @@ import icon16 from './style/16.png';
 import fnagkuai from './style/fnagkuai.png';
 import close from "../Mine/style/close.jpg";
 import left from '../Mine/style/left.png'
-import carousel1 from './style/banner.png';
+import carousel1 from './style/car1.png';
+import carousel2 from './style/banner.png';
 import carousel4 from './style/carousel4.png';
 
 import initReactFastclick from 'react-fastclick';
@@ -42,10 +43,7 @@ import JPushModule from 'jpush-react-native'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getData} from '../../components/active/reducer';
-import moment from "moment/moment";
-
-
-
+import base64 from "base-64";
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -53,7 +51,7 @@ class A extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [carousel1,carousel4],
+            data: [carousel1,carousel2,carousel4],
             dataSource: ds.cloneWithRows(['row 0']),
             checkinNo:'',
             status:null,
@@ -63,6 +61,7 @@ class A extends Component {
             modalVisible: false,//模态场景是否可见
             transparent: true,//是否透明显示
             hotelAlone:null,
+            name:null,
             phone:null,payOrderData:{}
 
 
@@ -92,15 +91,6 @@ class A extends Component {
     };
 
 
-
-
-
-
-
-
-
-
-
     componentWillMount(){
 
         //长链接实时获取消息
@@ -125,6 +115,7 @@ class A extends Component {
                 checkinNo:ret.checkinNo,
                 hotelAppScroll:ret.hotelAppScroll,
                 phone:ret.phone,
+                name:ret.name,
 
             },()=>{
                 this.ifExistsUnPayOrder()
@@ -733,6 +724,22 @@ class A extends Component {
         )
     };
 
+    jumpto = (val) => {
+        console.log(val,'valval');
+        const { navigate } = this.props.navigation;
+
+        let a  = `channel=shanpig&phone=${this.state.phone}`
+        let str = base64.encode(a)
+
+        let data = `http://anjutou360.com/ajt-ui/?data=${str}`
+        // let data = `http://test.fanci.net/ajt-ui?data=${str}`
+
+        if(val=='0'){
+            navigate('Jumpto',{ user:data })
+        }
+
+    }
+
 
     render(){
 
@@ -892,7 +899,6 @@ class A extends Component {
 
                     <ScrollView>
                         <ListView
-
                             dataSource={this.state.dataSource}
                             renderRow={(rowData) => (
                                 <View >
@@ -903,10 +909,11 @@ class A extends Component {
                                         autoplayInterval={4000}
                                         autoplay={true}
                                         infinite={true}
+                                        // dots={false}
 
                                     >
                                         {this.state.data.map((val,index) => (
-                                            <View key={index}>
+                                            <TouchableHighlight underlayColor="transparent" onPress={()=>{this.jumpto(index)}} key={index}>
                                                 <Image
                                                     source={val}
                                                     style={{
@@ -928,7 +935,7 @@ class A extends Component {
                                                         width: Dimensions.get('window').width, resizeMode:"stretch"}}
                                                     alt=""
                                                 />
-                                            </View>
+                                            </TouchableHighlight>
                                         ))}
                                     </Carousel>
 

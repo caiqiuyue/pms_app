@@ -881,18 +881,18 @@ class A extends Component {
 
                     <View style={{alignItems:"center",backgroundColor:"#f17e3a",height:60,justifyContent:"center"}}>
                         <View style={{alignItems:"center",marginTop:8,}}>
-                            <Text style={{color:"#fff",fontSize:16,}}>主页</Text>
+                            <Text style={{color:"#fff",fontSize:18,fontWeight:'bold'}}>{this.state.hotelAppScroll==null?'条 玛 青 年 社 区':this.state.hotelAppScroll}</Text>
                         </View>
                     </View>
 
 
 
 
-                    <View style={[styles.userItem,{
+                    {/*<View style={[styles.userItem,{*/}
 
-                    }]}>
-                        <Text style={{color:"#fff",fontSize:22}}>{this.state.hotelAppScroll==null?'条玛青年社区':this.state.hotelAppScroll}</Text>
-                    </View>
+                    {/*}]}>*/}
+                        {/*<Text style={{color:"#fff",fontSize:22}}>{this.state.hotelAppScroll==null?'条玛青年社区':this.state.hotelAppScroll}</Text>*/}
+                    {/*</View>*/}
 
 
 

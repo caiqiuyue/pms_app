@@ -243,11 +243,6 @@ export default class GoodSelect extends Component {
                 </View>
 
                 <View style={{
-                    ...ifIphoneX({
-                        height: Dimensions.get("window").height - 170,
-                    }, {
-
-                    }),
                     ...Platform.select({
                         ios: {
                             height: Dimensions.get("window").height - 160,
@@ -255,6 +250,11 @@ export default class GoodSelect extends Component {
                         android: {
                             height: Dimensions.get("window").height - 190,
                         },
+                    }),
+                    ...ifIphoneX({
+                        height: Dimensions.get("window").height - 170,
+                    }, {
+
                     }),
                 }}>
                     <FlatList

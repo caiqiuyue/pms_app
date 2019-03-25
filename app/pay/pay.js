@@ -274,6 +274,7 @@ export default class Clean extends Component {
             let flag = false;
             let money = 0;
             let feeCodeArr = item.feeCodes.split(',');
+            // if(item.couponState == 1 && item.hotelNos.indexOf(hotelNo) !== -1 && (item.feeCodes == 'all' || feeCodes.filter(_item => item.feeCodes.indexOf(_item) !== -1).length > 0)) {
             if(item.couponState == 1 && item.hotelNos.indexOf(hotelNo) !== -1 && (item.feeCodes == 'all' || feeCodes.filter(_item => item.feeCodes.indexOf(_item) !== -1).length > 0)) {
                 if(item.feeCodes == 'all') {
                     if(period) {

@@ -61,25 +61,21 @@ export default class ChangeRooms extends Component {
         console.log(data,'data');
 
 
-        if(data.name){
-            let names = data.name ? data.name.split(',') : "";
+        let names = data.name ? data.name.split(',') : "";
 
-            let bulidName = names.map((__item)=>{
-                let bu = {name: __item.trim(),flag: false};
-                return bu
-            });
+        let bulidName = []
 
-            console.log(data);
-            this.setState({
-                status:data.status === "0" ? 0 : data.status == 1 ? 1
-                    : data.status == 3 ? 3:data.status == 4 ? 4 : 11,
-                dataRoom:data.roomState&&data.roomState,
-                datas:data.roomState&&data.roomState,
-                allData:data.roomState&&data.roomState,
-                data,
-                name:bulidName
-            })
-        }
+        console.log(data);
+        console.log(data.status,'data.status');
+        this.setState({
+            status:data.status === "0" ? 0 : data.status == 1 ? 1
+                : data.status == 3 ? 3:data.status == 4 ? 4 : 11,
+            dataRoom:data.roomState&&data.roomState,
+            datas:data.roomState&&data.roomState,
+            allData:data.roomState&&data.roomState,
+            data,
+            name:bulidName
+        })
 
 
 

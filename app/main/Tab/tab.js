@@ -7,7 +7,7 @@ import TabHome from '../../MyHome/HomePage/homePage';
 import TabBarItem from './TabBarItem';
 import TabBarLabel from './TabBarLabel';
 import Message from '../../MyHome/Message/message';
-import GoodSelect from '../../MyHome/GoodSelect/GoodSelect';
+import GoodSelect from '../../MyHome/GoodSelect/GoodSelectBox';
 import Mine from '../../MyHome/Mine/MineBox';
 import CodePush from "react-native-code-push";
 // import Mine from '../../MyHome/Mine/setup';
@@ -166,7 +166,7 @@ const Tab = createBottomTabNavigator(
     },
 
     {
-        initialRouteName: 'TabHome',
+        initialRouteName: 'GoodSelect',
         // tabBarComponent:TabBarBottom,
         // tabBarPosition:'bottom',
         swipeEnabled:true,

@@ -252,7 +252,7 @@ export default class Mine extends React.Component {
             return
         }
 
-        if(uri1==''||uri2==''){
+        if(uri1=='' || uri2==''){
             Toast.info('请上传照片',1)
 
             return

@@ -12,13 +12,38 @@ export default class Mine extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            img:[{img:"http://47.95.116.56:8080/file_upload/images/app/convention/H10035_1.png"},
-                {img:"http://47.95.116.56:8080/file_upload/images/app/convention/H10035_2.png"}]
+            img:[]
 
         }
 
     }
 
+    getMyContract = ()=>{
+        axios.post(`/tenant/getCheckinNotes`, {
+
+        })
+            .then((response) =>{
+                console.log(response);
+                if(response.data.code==0){
+                    this.setState({
+                        img:response.data.data
+                    })
+                }else {
+                    Toast.info(response.data.message)
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    componentWillMount(){
+
+        this.getMyContract()
+
+
+    }
 
     // 保存图片
     download=(uri)=> {
@@ -93,19 +118,24 @@ export default class Mine extends React.Component {
     };
 
 
-
-
-
     render(){
 
 
 
         return (
 
-            <ScrollView style={{backgroundColor:"#fff",}}>
+            <ScrollView style={{backgroundColor:"#fff",}}
+
+                        maximumZoomScale={3}    // 子组件(图片)放大倍数
+                        minimumZoomScale={1.0}  // 子组件(图片)缩小倍数
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        centerContent={false} // 子组件(图片)一直处于父组件中心位置,不会因缩放向其他方向偏离
+                        ref="testScroll"
+            >
 
                 {
-                    this.state.img.map((item,index)=>
+                    this.state.img.length>0?this.state.img.map((item,index)=>
 
                         <View key={index}>
                             <TouchableHighlight style={{marginBottom:10,paddingBottom:5,borderBottomColor:"#f0f0f0",borderBottomWidth:1}} underlayColor="transparent" onLongPress={()=>this.saveImg(item.img)}>
@@ -117,7 +147,7 @@ export default class Mine extends React.Component {
 
                             </TouchableHighlight>
                         </View>
-                    )
+                    ):<View/>
                 }
 
 

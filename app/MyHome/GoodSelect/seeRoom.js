@@ -128,7 +128,7 @@ export default class GoodSelect extends React.Component {
                     hotelNo:data.hotel_no,
                     name:username,
                     phone:phone,
-                    date:moment(date).format("YYYY-MM-DD hh:mm:ss")
+                    date:moment(date).format("YYYY-MM-DD HH:mm:ss")
 
                 })
                     .then( (response)=> {

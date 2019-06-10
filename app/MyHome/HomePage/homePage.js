@@ -24,7 +24,7 @@ import icon16 from './style/16.png';
 import fnagkuai from './style/fnagkuai.png';
 import close from "../Mine/style/close.jpg";
 import left from '../Mine/style/left.png'
-import carousel1 from './style/car1.png';
+import carousel1 from './style/car1.jpg';
 import carousel2 from './style/banner.png';
 import carousel4 from './style/carousel4.png';
 
@@ -44,6 +44,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getData} from '../../components/active/reducer';
 import base64 from "base-64";
+import Contract from "../Mine/contract";
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -51,7 +52,9 @@ class A extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [carousel1,carousel2,carousel4],
+            data: [
+                {img:carousel1,imgUrl:'http://anjutou360.com/ajt-ui/shanIndex/?data='},
+            ],
             dataSource: ds.cloneWithRows(['row 0']),
             checkinNo:'',
             status:null,
@@ -62,12 +65,16 @@ class A extends Component {
             transparent: true,//是否透明显示
             hotelAlone:null,
             name:null,
-            phone:null,payOrderData:{}
+            tokenKey:'',
+            phone:null,
+            payOrderData:{},
+            realName:{},
 
 
 
     };
         this.flagNum = 1;
+        this.imgCarousel = false;
     }
 
 
@@ -97,10 +104,25 @@ class A extends Component {
         this.getMyMsg();
         global.stopMsgTime = setInterval(this.getMyMsg, 300000);
 
+        axios.post(`/tenant/getRotationChart`,{} )
+            .then((response) =>{
+                console.log(response,'轮播图');
+                if(response.data.code==0){
+                    if(response.data.data.length>0){
+                        this.imgCarousel = true;
+                        let data = response.data.data
+                        console.log(data,'datadata');
+                        this.setState({
+                            data
+                        })
+                    }
 
-        // JPushModule.setAlias((alias)=>{
-        //     //console.log(alias);
-        // })
+                }
+            })
+
+            .catch(function (error) {
+                console.log(error);
+            });
 
         //读取
         storage.load({
@@ -131,13 +153,25 @@ class A extends Component {
                     break;
             }
         });
+
+    }
+
+    componentWillReceiveProps() {
+        this.ifExistsUnPayOrder()
+
     }
 
 
     //身份证上传
     uploadImgSelected=(item)=>{
         const { navigate } = this.props.navigation;
-        navigate('RealName',{ user: item });
+        if(item){
+            navigate('RealName',{ user: item });
+        }else {
+            navigate('Contract',{ user: '' });
+        }
+        this._setModalVisible(false)
+
     }
 
 
@@ -183,17 +217,17 @@ class A extends Component {
 
 
                     if(response.data.code==0){
-                        if(response.data.cardImg==null){
+                        if(!response.data.cardCode){
 
                             response.data.cardImg = []
 
-                            Alert.alert('您还未实名认证，请实名认证','应公安部要求，请上传身份证照片',
-                                [
-                                    {text:"取消", onPress:this.cancelSelected},
-                                    {text:"确认", onPress:()=>{this.uploadImgSelected(response.data)}}
-                                ],
-                                { cancelable: false }
-                            );
+                            this.setState({
+                                modalVisible: true,
+                                modal: '实名认证',
+                                realName:response.data
+
+                            })
+
                         }else {
                             this.constract()
                         }
@@ -254,9 +288,17 @@ class A extends Component {
                             modalVisible: true,
                             modal: '合同',
                             checkinNo: response.data.data.checkinNo,
-                            constractImg:response.data.data.imgList
+                            // constractImg:response.data.data.imgList
 
                         })
+
+                        // Alert.alert('确定签约','请先签署电子合同',
+                        //     [
+                        //         // {text:"取消", onPress:this.cancelSelected},
+                        //         {text:"确认", onPress:()=>{this.uploadImgSelected()}}
+                        //     ],
+                        //     { cancelable: false }
+                        // );
                     }
 
                 }
@@ -453,12 +495,9 @@ class A extends Component {
 
 
 
-
-
-    allHomeGrid = (item,index) => {
+    aaa = (item)=>{
         const { navigate } = this.props.navigation;
         let {checkinNo} = this.state;
-
         switch (item.text)
         {
             case "预约维修":
@@ -516,7 +555,7 @@ class A extends Component {
                 console.log('fangzu');
 
                 if(checkinNo==''){
-                Toast.info("未签约用户暂不支持此功能",1)
+                    Toast.info("未签约用户暂不支持此功能",1)
                 }else{
                     navigate('Rent',{ user:"" });
                 }
@@ -706,6 +745,41 @@ class A extends Component {
 
                 Toast.info("暂不支持此功能",1)
         }
+    }
+
+
+    allHomeGrid = (item,index) => {
+
+
+        axios.post(`/contract/getMyContract`, {
+
+        })
+            .then((response) =>{
+                console.log(response,'合同');
+                if (response.data.data) {
+                    if(response.data.data.status!=2){
+                        this.setState({
+                            modalVisible: true,
+                            modal: '合同',
+                            checkinNo: response.data.data.checkinNo,
+                            // constractImg:response.data.data.imgList
+                        })
+                    }else {
+                        this.aaa(item)
+                    }
+
+                }else {
+                    this.aaa(item)
+                }
+
+
+
+            })
+            .catch(function (error) {
+                console.log(error);
+
+            });
+
 
 
     };
@@ -730,19 +804,27 @@ class A extends Component {
 
         let a  = `channel=shanpig&phone=${this.state.phone}`
         let str = base64.encode(a)
+        let data = ''
 
-        let data = `http://anjutou360.com/ajt-ui/?data=${str}`
-        // let data = `http://test.fanci.net/ajt-ui?data=${str}`
+        if(val){
+            if(val.indexOf('anjutou360.com')!=-1){
+                data=`${val}${str}`
+            }else {
+                data = val
+            }
 
-        if(val=='0'){
             navigate('Jumpto',{ user:data })
+
         }
+        // let data = `http://anjutou360.com/ajt-ui/shanIndex/?data=${str}`
+        // let data = `http://test.fanci.net/ajt-ui?data=${str}`
 
     }
 
 
-    render(){
 
+
+    render(){
 
         //弹框
         let modalBackgroundStyle = {
@@ -797,36 +879,19 @@ class A extends Component {
                                         <View>
                                             <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
 
-                                                <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>电子合同</Text></View>
+                                                <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>签订合同</Text></View>
 
-                                                <TouchableHighlight underlayColor={"#fff"} onPress={this._setModalVisible.bind(this,false)}>
-                                                    <Image style={{height:30,width:30}} source={close}/>
-                                                </TouchableHighlight>
+                                                {/*<TouchableHighlight underlayColor={"#fff"} onPress={this._setModalVisible.bind(this,false)}>*/}
+                                                    {/*<Image style={{height:30,width:30}} source={close}/>*/}
+                                                {/*</TouchableHighlight>*/}
 
 
                                             </View>
 
-
-                                            <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
-                                                {
-                                                    this.state.constractImg.length>0?
-
-                                                        (this.state.constractImg.map((item,index)=>
-                                                            <View key={index} style={{marginBottom:10,paddingBottom:5,borderBottomColor:"#f0f0f0",borderBottomWidth:1}}>
-                                                                <Image style={{flex:1,resizeMode:"stretch",width: '100%',
-                                                                    height: Dimensions.get('window').height-200}}
-                                                                       source={{uri:item,cache: 'force-cache'}}/>
-                                                            </View>))
-
-                                                        :null
-                                                }
-                                            </ScrollView>
-
-
                                             <View style={{alignItems:"center",marginTop:10}}>
                                                 <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
                                                     borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
-                                                    borderRadius:5}} onPress={this.acceept }>
+                                                    borderRadius:5}} onPress={()=>{this.uploadImgSelected() }}>
                                                     <Text
                                                         style={{fontSize:16,textAlign:"center",color:"#fff"}}>
 
@@ -836,6 +901,37 @@ class A extends Component {
                                                 </TouchableHighlight>
                                             </View>
                                         </View>:
+                                        this.state.modal=='实名认证'?
+
+                                            <View>
+                                                <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
+
+                                                    <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>实名认证</Text></View>
+
+                                                    <TouchableHighlight underlayColor={"#fff"} onPress={this._setModalVisible.bind(this,false)}>
+                                                        <Image style={{height:30,width:30}} source={close}/>
+                                                    </TouchableHighlight>
+
+
+                                                </View>
+
+                                                <View>
+                                                    <Text>应公安部要求，请上传身份证照片</Text>
+                                                </View>
+
+                                                <View style={{alignItems:"center",marginTop:10}}>
+                                                    <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
+                                                        borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
+                                                        borderRadius:5}} onPress={()=>{this.uploadImgSelected(this.state.realName) }}>
+                                                        <Text
+                                                            style={{fontSize:16,textAlign:"center",color:"#fff"}}>
+
+                                                            确定
+
+                                                        </Text>
+                                                    </TouchableHighlight>
+                                                </View>
+                                            </View>:
                                         <View>
                                             <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
 
@@ -881,7 +977,7 @@ class A extends Component {
 
                     <View style={{alignItems:"center",backgroundColor:"#f17e3a",height:60,justifyContent:"center"}}>
                         <View style={{alignItems:"center",marginTop:8,}}>
-                            <Text style={{color:"#fff",fontSize:18,fontWeight:'bold'}}>{this.state.hotelAppScroll==null?'条 玛 青 年 社 区':this.state.hotelAppScroll}</Text>
+                            <Text style={{color:"#fff",fontSize:18,fontWeight:'bold'}}>{this.state.hotelAppScroll}</Text>
                         </View>
                     </View>
 
@@ -898,86 +994,81 @@ class A extends Component {
 
 
                     <ScrollView>
-                        <ListView
-                            dataSource={this.state.dataSource}
-                            renderRow={(rowData) => (
-                                <View >
-                                    <View style={{flexDirection:"row",alignItems:"center",backgroundColor:"#fff"}}>
+                        <View >
+                            <View style={{flexDirection:"row",alignItems:"center",backgroundColor:"#fff"}}>
 
-                                    </View>
-                                    <Carousel
-                                        autoplayInterval={4000}
-                                        autoplay={true}
-                                        infinite={true}
-                                        // dots={false}
+                            </View>
+                            <Carousel
+                                autoplayInterval={4000}
+                                autoplay={true}
+                                infinite={true}
+                                // dots={false}
 
-                                    >
-                                        {this.state.data.map((val,index) => (
-                                            <TouchableHighlight underlayColor="transparent" onPress={()=>{this.jumpto(index)}} key={index}>
-                                                <Image
-                                                    source={val}
-                                                    style={{
-                                                        ...Platform.select({
-                                                            android: {
-                                                                height:170,
-                                                            },
-                                                            ios:{
-                                                                height:180,
-                                                            }
-                                                        }),
+                            >
+                                {this.state.data.map((val,index) => (
+                                    <TouchableHighlight underlayColor="transparent" onPress={()=>{this.jumpto(val.imgUrl)}} key={index}>
+                                        <Image
+                                            source={this.imgCarousel?{uri:val.img}:val.img}
+                                            style={{
+                                                ...Platform.select({
+                                                    android: {
+                                                        height:170,
+                                                    },
+                                                    ios:{
+                                                        height:180,
+                                                    }
+                                                }),
 
-                                                        ...ifIphoneX({
-                                                            height:220,
-                                                        }, {
+                                                ...ifIphoneX({
+                                                    height:220,
+                                                }, {
 
-                                                        }),
+                                                }),
 
-                                                        width: Dimensions.get('window').width, resizeMode:"stretch"}}
-                                                    alt=""
-                                                />
-                                            </TouchableHighlight>
-                                        ))}
-                                    </Carousel>
+                                                width: Dimensions.get('window').width, resizeMode:"stretch"}}
+                                            alt=""
+                                        />
+                                    </TouchableHighlight>
+                                ))}
+                            </Carousel>
 
 
 
 
 
-                                    <View style={{flexDirection:"row",flexWrap:"wrap",marginTop:10}} >
-                                        {
-                                            data.map((dataItem, index) => (
+                            <View style={{flexDirection:"row",flexWrap:"wrap",marginTop:10}} >
+                                {
+                                    data.map((dataItem, index) => (
 
-                                                <TouchableHighlight key={index + dataItem.text}
-                                                                    style={{width:'25%',alignItems:"center",marginBottom:10}}
-                                                                    underlayColor="#fff" onPress={() => this.allHomeGrid(dataItem, index)}>
+                                        <TouchableHighlight key={index + dataItem.text}
+                                                            style={{width:'25%',alignItems:"center",marginBottom:10}}
+                                                            underlayColor="#fff" onPress={() => this.allHomeGrid(dataItem, index)}>
 
-                                                    <ImageBackground source={fnagkuai} style={{width:"100%",
-                                                        paddingTop: 10, paddingBottom: 10,
-                                                        marginRight: (index + 1) !== 1 && index % 4 === 0 ? 0 : 10,
-                                                        alignItems: 'center', justifyContent: 'center' ,
-                                                    }}>
-                                                        <View>
-                                                            <Image source={dataItem.icon} style={{ width: 30, height: 30 }} />
-                                                        </View>
+                                            <ImageBackground source={fnagkuai} style={{width:"100%",
+                                                paddingTop: 10, paddingBottom: 10,
+                                                marginRight: (index + 1) !== 1 && index % 4 === 0 ? 0 : 10,
+                                                alignItems: 'center', justifyContent: 'center' ,
+                                            }}>
+                                                <View>
+                                                    <Image source={dataItem.icon} style={{ width: 30, height: 30 }} />
+                                                </View>
 
-                                                        <View style={{ marginTop: 12 }}>
-                                                            <Text>{dataItem.text}</Text>
-                                                        </View>
-                                                    </ImageBackground>
-
-
-
-                                                </TouchableHighlight>
-
-                                            ))
-                                        }
-                                    </View>
+                                                <View style={{ marginTop: 12 }}>
+                                                    <Text>{dataItem.text}</Text>
+                                                </View>
+                                            </ImageBackground>
 
 
 
-                                </View>
-                            )}
-                        />
+                                        </TouchableHighlight>
+
+                                    ))
+                                }
+                            </View>
+
+
+
+                        </View>
                     </ScrollView>
 
 

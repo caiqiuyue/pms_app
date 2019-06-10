@@ -18,6 +18,7 @@ import {WhiteSpace,DatePicker,List,Toast} from 'antd-mobile';
 import axios from '../../../axios'
 import ScoreAction from './ScoreAction'
 import Dimensions from 'Dimensions'
+import moment from 'moment'
 import selectIcon from '../../../pay/selectIcon.png'
 import s1 from '../../GoodSelect/style/234.png'
 
@@ -198,7 +199,7 @@ export default class Clean extends Component {
 
                 axios.post(`/tenant/submitCleanup`, {
                     content: text,
-                    aboutDate: new Date(date).Format('yyyy-MM-dd hh:mm:ss'),
+                    aboutDate: moment(date).format('YYYY-MM-DD HH:mm:ss'),
                     noPerson: noOneStr,
 
 
@@ -324,6 +325,16 @@ export default class Clean extends Component {
     }
 
 
+    setDates = (date)=>{
+        console.log(moment(date).format("HH"));
+        if(moment(date).format("HH")>18){
+            Toast.info('预约保洁最晚不超过18点')
+            return
+        }
+        this.setState({
+            date
+        })
+    }
 
 
 
@@ -461,7 +472,7 @@ export default class Clean extends Component {
                                                 extra=""
                                                 format={val => formatDate(val)}
                                                 minDate={minDate}
-                                                onChange={date => this.setState({date})}
+                                                onChange={date => this.setDates(date)}
                                             >
                                                 <CustomChildren></CustomChildren>
                                             </DatePicker>
@@ -535,6 +546,7 @@ export default class Clean extends Component {
                                         <WhiteSpace size="xl"/>
                                         <Text>「等待上门保洁」</Text>
                                         <WhiteSpace size="xl"/>
+                                        <Text style={{color:"red"}}>管家留言:{params[0].operationMsg}</Text>
                                     </View>)
                                     }
 

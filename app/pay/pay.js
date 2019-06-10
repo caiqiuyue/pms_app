@@ -497,6 +497,7 @@ export default class Clean extends Component {
             })
                 .then( (response)=> {
                     console.log(response,'查询代金券');
+                    // console.log(JSON.stringify(response.data.data),'1111');
 
                     this.setState({
                         bbb:true

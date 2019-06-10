@@ -105,7 +105,7 @@ export default class Mine extends React.Component {
                                     <View style={{flexDirection:"row",padding:10,borderColor:"#f0f0f0",borderWidth:1,borderRadius:5}}>
                                         <View style={{flex:4,alignItems:"center",justifyContent:"center"}}>
                                             <Text style={{fontSize:18,fontWeight:'bold'}}>{item.payType==0?'充值':'提现'}</Text>
-                                            <Text style={{marginTop:5,color:"grey"}}>{moment(item.createTime).format('YYYY-MM-DD hh:mm:ss')}</Text>
+                                            <Text style={{marginTop:5,color:"grey"}}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</Text>
                                         </View>
 
                                         <View style={{flex:4,alignItems:"center",justifyContent:"center"}}>

@@ -77,9 +77,8 @@ export default class Mine extends React.Component {
 
                                                 {item.star=='null'?<Text></Text>:<Text style={{marginTop:5}}>{item.star}星</Text>}
                                                 {item.evaluate?<Text style={{marginTop:5,color:"red"}}>评价内容:{item.evaluate}</Text>:null}
-                                                {item.butlerMsg?<Text style={{marginTop:5,color:"blue"}}>管家留言:{item.butlerMsg}</Text>:null}
-
-
+                                                {item.operationMsg?<Text style={{marginTop:5,color:"purple"}}>管家接受留言:{item.operationMsg}</Text>:null}
+                                                {item.butlerMsg?<Text style={{marginTop:5,color:"blue"}}>管家完成留言:{item.butlerMsg}</Text>:null}
 
                                             </View>
 

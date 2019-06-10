@@ -52,6 +52,7 @@
 		863A3F1E20C52FD8008C5354 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 863A3F1D20C52FD8008C5354 /* libz.tbd */; };
 		868AC30B20D134C700A0708D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 868AC30A20D134C700A0708D /* SystemConfiguration.framework */; };
 		868AC30D20D134F300A0708D /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 868AC30C20D134F300A0708D /* libsqlite3.0.tbd */; };
+		86D66B11226D5DDD00C2C9F0 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86D66ADE226D5DCA00C2C9F0 /* libART.a */; };
 		86F655FC20E38335006A0C2C /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F655FB20E381E3006A0C2C /* libRCTCameraRoll.a */; };
 		929487C7268043329C360A10 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A837C65500E548F6B15320F6 /* Security.framework */; };
 		A3629BD929334141BC333633 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 36D8EB6D5ACC4857AE53A697 /* libCodePush.a */; };
@@ -409,6 +410,20 @@
 			remoteGlobalIDString = F60690131CA2766F0003FB26;
 			remoteInfo = RealmReact;
 		};
+		86D66ADD226D5DCA00C2C9F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 86D66AD7226D5DC900C2C9F0 /* ART.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0CF68AC11AF0540F00FF9E5C;
+			remoteInfo = ART;
+		};
+		86D66ADF226D5DCA00C2C9F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 86D66AD7226D5DC900C2C9F0 /* ART.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 323A12871E5F266B004975B8;
+			remoteInfo = "ART-tvOS";
+		};
 		86F655FA20E381E3006A0C2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 86F655F620E381E2006A0C2C /* RCTCameraRoll.xcodeproj */;
@@ -472,6 +487,7 @@
 		863A3F1D20C52FD8008C5354 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		868AC30A20D134C700A0708D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		868AC30C20D134F300A0708D /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
+		86D66AD7226D5DC900C2C9F0 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		86F655F620E381E2006A0C2C /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		8E900DFCE2B245A9A21AF8DD /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		946643FA26E846659404A093 /* libAlipayModule.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAlipayModule.a; sourceTree = "<group>"; };
@@ -501,6 +517,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86D66B11226D5DDD00C2C9F0 /* libART.a in Frameworks */,
 				4BDC706523384A578E44584E /* CFNetwork.framework in Frameworks */,
 				86F655FC20E38335006A0C2C /* libRCTCameraRoll.a in Frameworks */,
 				863A3F1E20C52FD8008C5354 /* libz.tbd in Frameworks */,
@@ -727,6 +744,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				86D66AD7226D5DC900C2C9F0 /* ART.xcodeproj */,
 				86F655F620E381E2006A0C2C /* RCTCameraRoll.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -866,6 +884,15 @@
 			children = (
 				86B9087320F0781B00881E7C /* libCodePush.a */,
 				86B9087520F0781B00881E7C /* libCodePush.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		86D66AD8226D5DC900C2C9F0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				86D66ADE226D5DCA00C2C9F0 /* libART.a */,
+				86D66AE0226D5DCA00C2C9F0 /* libART-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1011,6 +1038,10 @@
 				{
 					ProductGroup = 863A3F1220C52E36008C5354 /* Products */;
 					ProjectRef = 64804C2C3A85477D912211B4 /* AlipayModule.xcodeproj */;
+				},
+				{
+					ProductGroup = 86D66AD8226D5DC900C2C9F0 /* Products */;
+					ProjectRef = 86D66AD7226D5DC900C2C9F0 /* ART.xcodeproj */;
 				},
 				{
 					ProductGroup = 86B9086E20F0781A00881E7C /* Products */;
@@ -1431,6 +1462,20 @@
 			fileType = archive.ar;
 			path = libRealmReact.a;
 			remoteRef = 86B9087720F0781B00881E7C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86D66ADE226D5DCA00C2C9F0 /* libART.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libART.a;
+			remoteRef = 86D66ADD226D5DCA00C2C9F0 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		86D66AE0226D5DCA00C2C9F0 /* libART-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libART-tvOS.a";
+			remoteRef = 86D66ADF226D5DCA00C2C9F0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		86F655FB20E381E3006A0C2C /* libRCTCameraRoll.a */ = {

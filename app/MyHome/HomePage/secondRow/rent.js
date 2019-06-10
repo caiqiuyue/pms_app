@@ -55,6 +55,7 @@ export default class Rent extends Component {
         this.type = false;
         this.flag = true;
         this.onLine = false;
+        this.isWhiteStripes = 2;
     }
 
 
@@ -117,6 +118,7 @@ export default class Rent extends Component {
                     // console.log(this.payMonth,'this.payMonth');
 
                     this.onLine = response.data.onLine;
+                    this.isWhiteStripes = response.data.isWhiteStripes;
 
 
                     let complete = param.filter((item)=>{
@@ -567,6 +569,9 @@ export default class Rent extends Component {
             isFenqi = !(fenqiArr[0].isFenqi == 1);
         }
 
+        console.log(dataSource,'dataSourcedataSource');
+        console.log(fenqiArr,'fenqiArrfenqiArr');
+        console.log(isFenqi,'isFenqiisFenqi');
 
 
 
@@ -656,7 +661,7 @@ export default class Rent extends Component {
                                                     <View style={styles.a}>
                                                         <Text style={styles.f}>抄表时间:</Text>
                                                         <View style={[styles.b,{flex:3}]}>
-                                                            <Text style={{flex:1}}>{roomInfo.createTime ? moment(roomInfo.createTime).format("YYYY-MM-DD hh:mm:ss"):null}</Text>
+                                                            <Text style={{flex:1}}>{roomInfo.createTime ? moment(roomInfo.createTime).format("YYYY-MM-DD HH:mm:ss"):null}</Text>
                                                         </View>
                                                     </View>
 
@@ -807,7 +812,7 @@ export default class Rent extends Component {
                                             <Text style={{color:"#f1803a"}}>{allRent.toFixed(2)}元</Text>
                                         </View>
                                         {
-                                            (!isFenqi || willpaid==1) ?<Text/> :
+                                            ((!isFenqi || willpaid==1 )|| this.isWhiteStripes==2) ?<Text/> :
                                                 (
                                                     <TouchableHighlight  underlayColor="#fff" onPress={this.installment}  style={{display:type!==1&&type!==2&&payMonth>1?'flex':'none',alignItems:"center",padding:10,backgroundColor:type!==1&&type!==2&&type!==3&&this.onLine?'#666':"#f1803a",flex:1}}>
                                                         <Text style={{color:"#fff"}}>房租月付</Text>

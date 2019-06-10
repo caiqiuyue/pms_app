@@ -370,7 +370,6 @@ export default class Mine extends React.Component {
                         </View>
 
 
-
                         {
                             coupon.length>0?
                                 <ScrollView>
@@ -383,6 +382,9 @@ export default class Mine extends React.Component {
                                                 paddingBottom:80,
                                             }
                                         }),}}>
+                                        <Text style={{color:"red",fontWeight:"bold"}}>
+                                            注意：若违约退房，退款中将会扣除已使用的优惠券金额，优惠券发放及使用政策最终解释权归条玛青年社区所有。
+                                        </Text>
                                         {
 
                                             coupon.length>0&&coupon.map((item,index)=>

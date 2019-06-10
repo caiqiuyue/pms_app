@@ -8,6 +8,7 @@ import Message from "../../MyHome/Message/message";
 import Mine from "../../MyHome/Mine/Mine";
 import GoodSelect from "../../MyHome/GoodSelect/GoodSelect";
 import TabHome from "../../MyHome/HomePage/homePage";
+import Shopping from '../../MyHome/GoodSelect/fresh/fleshBox';
 
 
 class TabBarItem extends Component {
@@ -21,6 +22,8 @@ class TabBarItem extends Component {
                 this.props.navigation.navigate('Message',{ user: '' })
             } else if(this.props.nameKey === '3') {
                 this.props.navigation.navigate('GoodSelect',{ user: '' })
+            }else if(this.props.nameKey === '5') {
+                this.props.navigation.navigate('Shopping',{ user: '' })
             } else {
                 this.props.navigation.navigate('Mine',{ user: '' })
             }

@@ -428,6 +428,9 @@ export default class Login extends Component {
 
                         </View>
 
+                        {/*<View style={{margin:10}}>*/}
+                            {/*<Text style={{color:"grey"}}>初始值密码为:12345678</Text>*/}
+                        {/*</View>*/}
 
 
                         {/*<View style={styles.phoneNum}>*/}

@@ -39,6 +39,7 @@ import YuE from './MyHome/Mine/yu_e';
 import Wallet from './MyHome/Mine/wallet';
 import MineYuYue from './MyHome/Mine/MineYuYue';
 import LifeService from './MyHome/Mine/lifeService';
+import Signature from './MyHome/Mine/signature';
 import SelfService from './MyHome/Mine/selfService';
 import FeedbackSuggestions from './MyHome/Mine/feedbackSuggestions';
 import RealName from './MyHome/Mine/realName';
@@ -65,6 +66,20 @@ const SimpleApp = createStackNavigator({
         screen: UnBankCard,
         navigationOptions: {
             headerTitle:'解绑卡',
+            headerBackTitle:null,
+            headerStyle: {
+                backgroundColor: '#f17e3a'
+            },
+            headerTitleStyle: {
+                color: '#fff'
+            },
+            headerTintColor:"#fff"
+        }
+    },
+    Signature:{
+        screen: Signature,
+        navigationOptions: {
+            headerTitle:'签合同',
             headerBackTitle:null,
             headerStyle: {
                 backgroundColor: '#f17e3a'

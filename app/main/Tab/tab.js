@@ -8,6 +8,8 @@ import TabBarItem from './TabBarItem';
 import TabBarLabel from './TabBarLabel';
 import Message from '../../MyHome/Message/message';
 import GoodSelect from '../../MyHome/GoodSelect/GoodSelect';
+// import GoodSelect from '../../MyHome/GoodSelect/fresh/GoodSelect';
+import Shopping from '../../MyHome/GoodSelect/fresh/fleshBox';
 import Mine from '../../MyHome/Mine/MineBox';
 import CodePush from "react-native-code-push";
 // import Mine from '../../MyHome/Mine/setup';
@@ -93,8 +95,43 @@ const Tab = createBottomTabNavigator(
                 })
             },
         },
-        GoodSelect:{
-            screen:GoodSelect,
+        // GoodSelect:{
+        //     screen:GoodSelect,
+        //     navigationOptions:({navigation}) => {
+        //
+        //         if(navigation.isFocused()){
+        //
+        //             CodePush.sync();
+        //
+        //             CodePush.allowRestart();//在加载完了可以允许重启
+        //
+        //         }
+        //
+        //         return ({
+        //             tabBarLabel:({focused,tintColor}) => (
+        //                 <TabBarLabel
+        //                     navigation={navigation}
+        //                     nameKey={'3'}
+        //                     tintColor={tintColor}
+        //                     focused={focused}
+        //                     lableName={'优选'}
+        //                 />),
+        //             tabBarIcon:({focused,tintColor}) => (
+        //                 <TabBarItem
+        //                     navigation={navigation}
+        //                     nameKey={'3'}
+        //                     tintColor={tintColor}
+        //                     focused={focused}
+        //                     normalImage={require('./goodSelectInit.png')}
+        //                     selectedImage={require('./goodSelectIcon.png')}
+        //
+        //                 />
+        //             )
+        //         })
+        //     },
+        // },
+        Shopping:{
+            screen:Shopping,
             navigationOptions:({navigation}) => {
 
                 if(navigation.isFocused()){
@@ -109,7 +146,7 @@ const Tab = createBottomTabNavigator(
                     tabBarLabel:({focused,tintColor}) => (
                         <TabBarLabel
                             navigation={navigation}
-                            nameKey={'3'}
+                            nameKey={'5'}
                             tintColor={tintColor}
                             focused={focused}
                             lableName={'优选'}
@@ -117,11 +154,11 @@ const Tab = createBottomTabNavigator(
                     tabBarIcon:({focused,tintColor}) => (
                         <TabBarItem
                             navigation={navigation}
-                            nameKey={'3'}
+                            nameKey={'5'}
                             tintColor={tintColor}
                             focused={focused}
-                            normalImage={require('./goodSelectInit.png')}
-                            selectedImage={require('./goodSelectIcon.png')}
+                            normalImage={require('./shopping.png')}
+                            selectedImage={require('./shopping.png')}
 
                         />
                     )

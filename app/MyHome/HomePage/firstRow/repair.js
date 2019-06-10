@@ -23,6 +23,7 @@ import Dimensions from 'Dimensions'
 import selectIcon from '../../../pay/selectIcon.png'
 import s1 from '../../GoodSelect/style/234.png'
 import AddPic from './addPic'
+import moment from "moment";
 
 
 const CustomChildren = props => {
@@ -150,6 +151,17 @@ export default class Repair extends Component {
         Toast.info('已提交申请，不可重复提交',1);
     }
 
+    setDates = (date)=>{
+        console.log(moment(date).format("HH"));
+        if(moment(date).format("HH")>20){
+            Toast.info('预约维修最晚不超过20点')
+            return
+        }
+        this.setState({
+            date
+        })
+    }
+
     //提交保修单
     submitBtn = ()=> {
 
@@ -199,7 +211,7 @@ export default class Repair extends Component {
             },()=>{
                 axios.post(`/tenant/submitRepair`, {
                     content: text,
-                    aboutDate:new Date(date).Format('yyyy-MM-dd hh:mm:ss'),
+                    aboutDate:moment(date).format('YYYY-MM-DD HH:mm:ss'),
                     noPerson:noOneStr,
                     repairImg:this.state.roomImg
 
@@ -481,7 +493,7 @@ export default class Repair extends Component {
                                                     format={val => formatDate(val)}
                                                     extra=">"
                                                     minDate={minDate}
-                                                    onChange={date => this.setState({date})}
+                                                    onChange={date => this.setDates(date)}
                                                 >
                                                     <CustomChildren></CustomChildren>
                                                 </DatePicker>
@@ -552,6 +564,7 @@ export default class Repair extends Component {
                                                     <WhiteSpace size="xl"/>
                                                     <Text>「等待上门维修」</Text>
                                                     <WhiteSpace size="xl"/>
+                                                    <Text style={{color:"red"}}>管家留言:{params[0].operationMsg}</Text>
                                                 </View>
                                         }
 

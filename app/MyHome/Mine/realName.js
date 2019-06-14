@@ -18,7 +18,8 @@ export default class Mine extends React.Component {
             flag:false,
             tokenKey:'',
             url:'',
-            datas:{}
+            datas:{},
+            username:{},
         }
 
     }
@@ -91,6 +92,27 @@ export default class Mine extends React.Component {
             }
         });
 
+        //读取
+        storage.load({
+            key: 'username',
+            // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
+            autoSync: false
+        }).then(ret => {
+            this.setState({
+                username:ret
+            })
+        }).catch(err => {
+            //如果没有找到数据且没有sync方法，
+            //或者有其他异常，则在catch中返回
+            console.warn(err.message);
+            switch (err.name) {
+                case 'NotFoundError':
+                    break;
+                case 'ExpiredError':
+                    break;
+            }
+        });
+
     }
 
 
@@ -102,6 +124,8 @@ export default class Mine extends React.Component {
 
         axios.post(`${this.state.url}/contract/getMyContract`, {
             tokenKey:this.state.tokenKey,
+            // checkinNo:this.state.username.checkinNo,
+            hotelNo:this.state.username.hotelNo,
 
         })
             .then((response) =>{

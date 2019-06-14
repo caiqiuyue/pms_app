@@ -54,9 +54,11 @@ class A extends Component {
         this.state = {
             data: [
                 {img:carousel1,imgUrl:'http://anjutou360.com/ajt-ui/shanIndex/?data='},
+                {img:carousel2,imgUrl:''},
             ],
             dataSource: ds.cloneWithRows(['row 0']),
             checkinNo:'',
+            hotelNo:'',
             status:null,
             constractImg:[],
             contractNo:'',
@@ -138,6 +140,7 @@ class A extends Component {
                 hotelAppScroll:ret.hotelAppScroll,
                 phone:ret.phone,
                 name:ret.name,
+                hotelNo:ret.hotelNo,
 
             },()=>{
                 this.ifExistsUnPayOrder()
@@ -250,7 +253,8 @@ class A extends Component {
     //合同
     constract = ()=>{
         axios.post(`/contract/getMyContract`, {
-
+            // checkinNo:this.state.checkinNo,
+            hotelNo:this.state.hotelNo,
         })
             .then((response) =>{
                 console.log(response,'合同');
@@ -752,6 +756,8 @@ class A extends Component {
 
 
         axios.post(`/contract/getMyContract`, {
+            // checkinNo:this.state.checkinNo,
+            hotelNo:this.state.hotelNo,
 
         })
             .then((response) =>{

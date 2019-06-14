@@ -2,6 +2,15 @@
 
 
 const loginCss = {
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+
+    },
+    innerContainer: {
+        borderRadius: 10,
+    },
     login:{
         // flex:1,
 

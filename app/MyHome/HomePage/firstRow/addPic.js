@@ -64,7 +64,7 @@ export default class Mine extends React.Component {
                 let img = response.data
 
                 let {imgArr} = this.state
-
+                // 47.95.116.56:8443/file_upload
                 axios.post('https://47.95.116.56:8443/file_upload/addRepairImage', {
                     hotelNo:this.state.userData.hotelNo,
                     roomNo:this.state.userData.roomNo,
@@ -72,7 +72,7 @@ export default class Mine extends React.Component {
 
                 })
                     .then((res) =>{
-                        console.log(res);
+                        console.log(res,'图片');
                         if(res.data.code==0){
 
                             let b = []
@@ -97,6 +97,7 @@ export default class Mine extends React.Component {
                     })
                     .catch(function (error) {
                         console.log(error);
+                        console.log('错误');
                     })
 
 

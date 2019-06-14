@@ -29,9 +29,10 @@ export default class Mine extends Component {
 
     }
 
-    getMyContract = ()=>{
+    getMyContract = (item)=>{
         axios.post(`/contract/getMyContract`, {
-
+            // checkinNo:item.checkinNo,
+            hotelNo:item.hotelNo,
         })
             .then((response) =>{
                 console.log(response);
@@ -84,8 +85,26 @@ export default class Mine extends Component {
     }
 
     componentWillMount(){
+        //读取
+        storage.load({
+            key: 'username',
+            // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
+            autoSync: false
+        }).then(ret => {
 
-        this.getMyContract()
+            this.getMyContract(ret)
+        }).catch(err => {
+            //如果没有找到数据且没有sync方法，
+            //或者有其他异常，则在catch中返回
+            console.warn(err.message);
+            switch (err.name) {
+                case 'NotFoundError':
+                    break;
+                case 'ExpiredError':
+                    break;
+            }
+        });
+
 
 
     }

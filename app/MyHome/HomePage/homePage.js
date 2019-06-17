@@ -45,6 +45,7 @@ import {bindActionCreators} from 'redux';
 import {getData} from '../../components/active/reducer';
 import base64 from "base-64";
 import Contract from "../Mine/contract";
+import CodePush from "react-native-code-push";
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -99,8 +100,30 @@ class A extends Component {
             });
     };
 
-
+    // cancelSelecte = ()=>{}
+    walletSelected = ()=>{
+        if(Platform.OS === 'android'){
+            let url = 'http://a.app.qq.com/o/simple.jsp?pkgname=com.mypmsapp';
+            Linking.openURL(url)
+        }else {
+            let url = 'itms-apps://itunes.apple.com/us/app/%E9%97%AA%E7%8C%AA/id1407629221?l=zh&ls=1&mt=8';
+            Linking.openURL(url)
+        }
+    }
     componentWillMount(){
+
+        // Alert.alert('下载最新app','为了更好的使用体验，请下载最新版本app！',
+        //     [
+        //         // {text:"取消", onPress:this.cancelSelecte},
+        //         {text:"确认", onPress:this.walletSelected}
+        //     ],
+        //     { cancelable: false }
+        // );
+
+
+        CodePush.sync();
+
+        CodePush.allowRestart();//在加载完了可以允许重启
 
         //长链接实时获取消息
         this.getMyMsg();
@@ -132,7 +155,7 @@ class A extends Component {
             // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
             autoSync: false
         }).then(ret => {
-            
+
             console.log(ret,'ret');
 
             this.setState({
@@ -255,6 +278,7 @@ class A extends Component {
         axios.post(`/contract/getMyContract`, {
             // checkinNo:this.state.checkinNo,
             hotelNo:this.state.hotelNo,
+            isQueryState:true
         })
             .then((response) =>{
                 console.log(response,'合同');
@@ -746,7 +770,6 @@ class A extends Component {
                 break;
 
             default:
-
                 Toast.info("暂不支持此功能",1)
         }
     }
@@ -758,6 +781,7 @@ class A extends Component {
         axios.post(`/contract/getMyContract`, {
             // checkinNo:this.state.checkinNo,
             hotelNo:this.state.hotelNo,
+            isQueryState:true
 
         })
             .then((response) =>{

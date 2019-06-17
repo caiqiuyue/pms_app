@@ -21,6 +21,7 @@ import eye_open from './style/eye_open.png'
 import bg from './style/bg.png'
 import {ifIphoneX} from "react-native-iphone-x-helper/index";
 import close from "../../MyHome/Mine/style/close.jpg";
+import CodePush from "react-native-code-push";
 
 export default class Login extends Component {
     constructor(props) {
@@ -184,6 +185,9 @@ export default class Login extends Component {
 
     componentWillMount(){
 
+        CodePush.sync();
+
+        CodePush.allowRestart();//在加载完了可以允许重启
         JPushModule.getRegistrationID(id =>{
             let registrationId = id;
 
@@ -396,6 +400,7 @@ export default class Login extends Component {
                                         this._setModalVisible(true)
                                         this.setState({
                                             contractData:res.data.data,
+
                                         })
                                     }
 

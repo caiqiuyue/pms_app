@@ -24,7 +24,7 @@ import icon16 from './style/16.png';
 import fnagkuai from './style/fnagkuai.png';
 import close from "../Mine/style/close.jpg";
 import left from '../Mine/style/left.png'
-import carousel1 from './style/car1.jpg';
+import carousel1 from './style/pangxie.jpg';
 import carousel2 from './style/banner.png';
 import carousel4 from './style/carousel4.png';
 
@@ -54,7 +54,8 @@ class A extends Component {
         super(props);
         this.state = {
             data: [
-                {img:carousel1,imgUrl:'http://anjutou360.com/ajt-ui/shanIndex/?data='},
+                // {img:carousel1,imgUrl:'http://www.baidu.com'},
+                {img:carousel4,imgUrl:''},
                 {img:carousel2,imgUrl:''},
             ],
             dataSource: ds.cloneWithRows(['row 0']),
@@ -112,7 +113,7 @@ class A extends Component {
     }
     componentWillMount(){
 
-        // Alert.alert('下载最新app','为了更好的使用体验，请下载最新版本app！',
+        // Alert.alert('下载最新app','为了更好的使用体验，请下载最新版本app！,安卓用户请先卸载app重新扫码下载',
         //     [
         //         // {text:"取消", onPress:this.cancelSelecte},
         //         {text:"确认", onPress:this.walletSelected}
@@ -122,7 +123,6 @@ class A extends Component {
 
 
         CodePush.sync();
-
         CodePush.allowRestart();//在加载完了可以允许重启
 
         //长链接实时获取消息
@@ -842,7 +842,10 @@ class A extends Component {
             }else {
                 data = val
             }
+            
+            console.log(this.state.phone,'this.state.phone');
 
+            console.log(data,'安居头');
             navigate('Jumpto',{ user:data })
 
         }

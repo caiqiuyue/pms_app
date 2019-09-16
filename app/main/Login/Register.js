@@ -440,110 +440,114 @@ export default class Register extends Component {
         return (
 
 
-                <View style={{ backgroundColor:"#fff",}}>
-                    <View>
+                <View style={{ padding:30,marginTop:50}}>
 
-                        <View>
-                            <Image
-                                source={bg}
-                                style={{height:150,width: Dimensions.get('window').width, resizeMode:"stretch"}}
-                                alt=""
+                    <Text>
+                        本APP为公寓内部软件，暂不支持游客注册，如您已办理入住，请直接登录；手机号为入住人手机号，初始密码为：12345678，为了您的信息安全，请登录后尽快修改密码！
+                    </Text>
+                    {/*<View>*/}
 
-                            />
-                        </View>
-                        <ScrollView>
+                        {/*<View>*/}
+                            {/*<Image*/}
+                                {/*source={bg}*/}
+                                {/*style={{height:150,width: Dimensions.get('window').width, resizeMode:"stretch"}}*/}
+                                {/*alt=""*/}
 
-                            <View style={{height: 800,padding:30}}>
-                                <View style={{flexDirection:"row",padding:5,borderColor:"#f0f0f0",borderWidth:1,borderRadius:20,}}>
-                                    <View  style={{justifyContent:'center',}}><Image source={phoneIcon} style={styles.iconImg}/></View>
-                                    <View style={{justifyContent:'center',alignItems:"center",marginLeft:15}}>
-                                        <TextInput
-                                            placeholder="手机号"
-                                            style={{minWidth:300,padding:0}}
-                                            maxLength={11}
-                                            dataDetectorTypes='phoneNumber'
-                                            keyboardType='numeric'
-                                            underlineColorAndroid="transparent"
-                                            onChangeText={(phone) => this.handlePhoneChange(phone)}
-                                            onBlur={this.handlePhoneError}
+                            {/*/>*/}
+                        {/*</View>*/}
+                        {/*<ScrollView>*/}
 
-                                        >
-                                        </TextInput>
-                                    </View>
+                            {/*<View style={{height: 800,padding:30}}>*/}
+                                {/*<View style={{flexDirection:"row",padding:5,borderColor:"#f0f0f0",borderWidth:1,borderRadius:20,}}>*/}
+                                    {/*<View  style={{justifyContent:'center',}}><Image source={phoneIcon} style={styles.iconImg}/></View>*/}
+                                    {/*<View style={{justifyContent:'center',alignItems:"center",marginLeft:15}}>*/}
+                                        {/*<TextInput*/}
+                                            {/*placeholder="手机号"*/}
+                                            {/*style={{minWidth:300,padding:0}}*/}
+                                            {/*maxLength={11}*/}
+                                            {/*dataDetectorTypes='phoneNumber'*/}
+                                            {/*keyboardType='numeric'*/}
+                                            {/*underlineColorAndroid="transparent"*/}
+                                            {/*onChangeText={(phone) => this.handlePhoneChange(phone)}*/}
+                                            {/*onBlur={this.handlePhoneError}*/}
 
-                                </View>
+                                        {/*>*/}
+                                        {/*</TextInput>*/}
+                                    {/*</View>*/}
 
-
-                                <View style={{marginTop:10,flexDirection:"row",padding:5,borderColor:"#f0f0f0",borderWidth:1,borderRadius:20}}>
-                                    <View  style={{justifyContent:'center',}}><Image source={lockIcon} style={styles.iconImg}/></View>
-                                    <View style={{justifyContent:'center',marginLeft:15,flex:1}}>
-                                        <TextInput
-                                            placeholder="请输入密码"
-                                            style={{minWidth:300,padding:0}}
-                                            secureTextEntry={passwordT?true:false}
-                                            underlineColorAndroid="transparent"
-                                            onChangeText={(passwordType) => this.handlePasswordChange(passwordType)}
-                                            onBlur={()=>{this.handlePasswordError()}}
+                                {/*</View>*/}
 
 
-                                        >
-                                        </TextInput>
-                                    </View>
-
-                                    <TouchableHighlight underlayColor="#fff" onPress={this.changePasswordType} style={{marginRight:20}}>
-                                        <View>
-                                            <Image source={passwordFlag ? eye_open : eye_close} style={styles.iconImg}/>
-                                        </View>
-                                    </TouchableHighlight>
-
-                                </View>
-
-
-                                <View style={{marginTop:10,flexDirection:"row",padding:5,borderColor:"#f0f0f0",borderWidth:1,borderRadius:20}}>
-                                    <View  style={{justifyContent:'center',}}><Image source={securityIcon} style={styles.iconImg}/></View>
-
-                                    <View style={{justifyContent:'center',marginLeft:15,flex:2}}>
-                                        <TextInput
-                                            placeholder="请输入验证码"
-                                            style={{minWidth:80,padding:0}}
-                                            keyboardType='numeric'
-                                            maxLength={6}
-                                            underlineColorAndroid="transparent"
-                                            onChangeText={(code) => this.handleCodeChange(code)}
-                                            onBlur={()=>{this.handleCodeError()}}
-
-                                        >
-                                        </TextInput>
-                                    </View>
+                                {/*<View style={{marginTop:10,flexDirection:"row",padding:5,borderColor:"#f0f0f0",borderWidth:1,borderRadius:20}}>*/}
+                                    {/*<View  style={{justifyContent:'center',}}><Image source={lockIcon} style={styles.iconImg}/></View>*/}
+                                    {/*<View style={{justifyContent:'center',marginLeft:15,flex:1}}>*/}
+                                        {/*<TextInput*/}
+                                            {/*placeholder="请输入密码"*/}
+                                            {/*style={{minWidth:300,padding:0}}*/}
+                                            {/*secureTextEntry={passwordT?true:false}*/}
+                                            {/*underlineColorAndroid="transparent"*/}
+                                            {/*onChangeText={(passwordType) => this.handlePasswordChange(passwordType)}*/}
+                                            {/*onBlur={()=>{this.handlePasswordError()}}*/}
 
 
-                                    <View  style={{flex: 2 }}>
-                                        <Button size="small" style={{height:26, backgroundColor:"#ef813a"}} inline="true" disabled={CountDown} onClick={this.handleCountDown}>
-                                            <Text style={{color:'#fff'}}>{CountDown ? `重新获取验证码${CountDownNum}S` : '获取验证码'}</Text>
-                                        </Button>
-                                    </View>
+                                        {/*>*/}
+                                        {/*</TextInput>*/}
+                                    {/*</View>*/}
+
+                                    {/*<TouchableHighlight underlayColor="#fff" onPress={this.changePasswordType} style={{marginRight:20}}>*/}
+                                        {/*<View>*/}
+                                            {/*<Image source={passwordFlag ? eye_open : eye_close} style={styles.iconImg}/>*/}
+                                        {/*</View>*/}
+                                    {/*</TouchableHighlight>*/}
+
+                                {/*</View>*/}
+
+
+                                {/*<View style={{marginTop:10,flexDirection:"row",padding:5,borderColor:"#f0f0f0",borderWidth:1,borderRadius:20}}>*/}
+                                    {/*<View  style={{justifyContent:'center',}}><Image source={securityIcon} style={styles.iconImg}/></View>*/}
+
+                                    {/*<View style={{justifyContent:'center',marginLeft:15,flex:2}}>*/}
+                                        {/*<TextInput*/}
+                                            {/*placeholder="请输入验证码"*/}
+                                            {/*style={{minWidth:80,padding:0}}*/}
+                                            {/*keyboardType='numeric'*/}
+                                            {/*maxLength={6}*/}
+                                            {/*underlineColorAndroid="transparent"*/}
+                                            {/*onChangeText={(code) => this.handleCodeChange(code)}*/}
+                                            {/*onBlur={()=>{this.handleCodeError()}}*/}
+
+                                        {/*>*/}
+                                        {/*</TextInput>*/}
+                                    {/*</View>*/}
+
+
+                                    {/*<View  style={{flex: 2 }}>*/}
+                                        {/*<Button size="small" style={{height:26, backgroundColor:"#ef813a"}} inline="true" disabled={CountDown} onClick={this.handleCountDown}>*/}
+                                            {/*<Text style={{color:'#fff'}}>{CountDown ? `重新获取验证码${CountDownNum}S` : '获取验证码'}</Text>*/}
+                                        {/*</Button>*/}
+                                    {/*</View>*/}
 
 
 
-                                </View>
+                                {/*</View>*/}
 
-                                <Flex style={{ width:'100%',height:40}}>
-                                    <Flex.Item>
-                                        <AgreeItem data-seed="logId" onChange={this.agree} checked={agreeChecked}>
-                                            <Text>已阅读并同意 <Text>《注册协议和隐私权政策》</Text></Text>
-                                        </AgreeItem>
-                                    </Flex.Item>
-                                </Flex>
+                                {/*<Flex style={{ width:'100%',height:40}}>*/}
+                                    {/*<Flex.Item>*/}
+                                        {/*<AgreeItem data-seed="logId" onChange={this.agree} checked={agreeChecked}>*/}
+                                            {/*<Text>已阅读并同意 <Text>《注册协议和隐私权政策》</Text></Text>*/}
+                                        {/*</AgreeItem>*/}
+                                    {/*</Flex.Item>*/}
+                                {/*</Flex>*/}
 
 
-                                <Button
-                                    style={{backgroundColor:'#ef813a',borderRadius:20,marginTop:20}}
-                                    onClick={this.registerSub}><Text style={{color:'#fff'}}>确定</Text>
-                                </Button>
-                            </View>
-                        </ScrollView>
+                                {/*<Button*/}
+                                    {/*style={{backgroundColor:'#ef813a',borderRadius:20,marginTop:20}}*/}
+                                    {/*onClick={this.registerSub}><Text style={{color:'#fff'}}>确定</Text>*/}
+                                {/*</Button>*/}
+                            {/*</View>*/}
+                        {/*</ScrollView>*/}
 
-                    </View>
+                    {/*</View>*/}
 
 
 

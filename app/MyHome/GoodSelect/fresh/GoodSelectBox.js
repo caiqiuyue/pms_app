@@ -18,6 +18,8 @@ export default class GoodSelect extends Component {
         this.state={
             district:[],
             allMoney:0,
+            img:'',
+            modal:'',
             animationType: 'none',//none slide fade
             modalVisible: false,//模态场景是否可见
             transparent: true,//是否透明显示
@@ -165,7 +167,11 @@ export default class GoodSelect extends Component {
         if(!this.state.allMoney){
             return
         }
-        this._setModalVisible(true)
+        this.setState({
+            modalVisible:true,
+            modal:''
+
+        })
     }
     submitPay = ()=>{
         let {district} = this.state
@@ -201,6 +207,18 @@ export default class GoodSelect extends Component {
         })
 
 
+    }
+
+    seeImg = (item)=>{
+        if(!item){
+            return
+        }
+        this.setState({
+            img:item,
+            modalVisible:true,
+            modal:'查看图片'
+
+        })
     }
 
 
@@ -241,7 +259,7 @@ export default class GoodSelect extends Component {
 
                                     <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
 
-                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>购物车</Text></View>
+                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>{this.state.modal=='查看图片'?'图片':'购物车'}</Text></View>
 
                                         <TouchableHighlight underlayColor={"#fff"} onPress={()=>{this._setModalVisible(false)} } style={{}}>
                                             <Image style={{height:30,width:30}} source={close}/>
@@ -251,67 +269,74 @@ export default class GoodSelect extends Component {
                                     </View>
 
                                     <View style={{padding:10}}>
+                                        {
+                                            this.state.modal=='查看图片'?
+                                                <View style={{height:Dimensions.get('window').height-200}}>
+                                                    <Image style={{width:"100%",height:"100%",resizeMode:"stretch"}} source={{uri:this.state.img}}/>
+                                                </View>:
+                                                <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
 
-                                        <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
+                                                    {
+                                                        district.map((_item,index)=>
 
-                                            {
-                                                district.map((_item,index)=>
+                                                            _item.a.map((item,index)=>
 
-                                                    _item.a.map((item,index)=>
+                                                                item.num?
 
-                                                        item.num?
+                                                                    <View key={index} style={{flexDirection:"row"}}>
+                                                                        <View style={{padding:10,flex:1,borderBottomColor:"#f0f0f0",borderBottomWidth:1}}>
+                                                                            <Text style={{fontWeight:"bold"}}>{item.goodsName}</Text>
+                                                                            <View style={{marginTop:10,flexDirection:"row-reverse"}}>
+                                                                                <View style={{flexDirection:"row"}}>
+                                                                                    <Text style={{color:"#f17e3a",fontSize:16,fontWeight:"bold",marginRight:10}}>
+                                                                                        ¥{item.otherPrice}
+                                                                                    </Text>
+                                                                                    {item.num&&
+                                                                                    <TouchableHighlight underlayColor="transparent"
+                                                                                                        onPress={()=>{this.subGoods(item)}}
+                                                                                                        style={{width:20,height:20,borderRadius:10,borderColor:"grey",borderWidth:1,alignItems:"center",justifyContent:"center"}}>
+                                                                                        <Text style={{fontWeight:"bold"}}>-</Text>
+                                                                                    </TouchableHighlight>}
+                                                                                    {item.num&&<View style={{marginLeft:10,marginRight:10}}><Text>{item.num}</Text></View>}
+                                                                                    <TouchableHighlight underlayColor="transparent" onPress={()=>{this.addGoods(item)}}><Image style={{width:20,height:20}} source={add}/></TouchableHighlight>
+                                                                                </View>
 
-                                                            <View key={index} style={{flexDirection:"row"}}>
-                                                                <View style={{padding:10,flex:1,borderBottomColor:"#f0f0f0",borderBottomWidth:1}}>
-                                                                    <Text style={{fontWeight:"bold"}}>{item.goodsName}</Text>
-                                                                    <View style={{marginTop:10,flexDirection:"row-reverse"}}>
-                                                                        <View style={{flexDirection:"row"}}>
-                                                                            <Text style={{color:"#f17e3a",fontSize:16,fontWeight:"bold",marginRight:10}}>
-                                                                                ¥{item.otherPrice}
-                                                                            </Text>
-                                                                            {item.num&&
-                                                                            <TouchableHighlight underlayColor="transparent"
-                                                                                                onPress={()=>{this.subGoods(item)}}
-                                                                                                style={{width:20,height:20,borderRadius:10,borderColor:"grey",borderWidth:1,alignItems:"center",justifyContent:"center"}}>
-                                                                                <Text style={{fontWeight:"bold"}}>-</Text>
-                                                                            </TouchableHighlight>}
-                                                                            {item.num&&<View style={{marginLeft:10,marginRight:10}}><Text>{item.num}</Text></View>}
-                                                                            <TouchableHighlight underlayColor="transparent" onPress={()=>{this.addGoods(item)}}><Image style={{width:20,height:20}} source={add}/></TouchableHighlight>
+                                                                            </View>
                                                                         </View>
-
                                                                     </View>
-                                                                </View>
-                                                            </View>
-                                                            :null
+                                                                    :null
 
-                                                    )
+                                                            )
 
-                                                )
-                                            }
+                                                        )
+                                                    }
 
 
-                                            <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:10}}>
-                                                <Text>共计:</Text>
-                                                <Text style={{color:"#f1803a"}}>{this.state.allMoney}元</Text>
-                                            </View>
+                                                    <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:10}}>
+                                                        <Text>共计:</Text>
+                                                        <Text style={{color:"#f1803a"}}>{this.state.allMoney}元</Text>
+                                                    </View>
 
 
-                                            <View style={{alignItems:"center",marginTop:10}}>
-                                                <Text style={{marginBottom:10,color:'red'}}>注:货到付款</Text>
+                                                    <View style={{alignItems:"center",marginTop:10}}>
+                                                        <Text style={{marginBottom:10,color:'red'}}>注:货到付款</Text>
 
-                                                <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
-                                                    borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
-                                                    borderRadius:5}} onPress={this.submitPay }>
-                                                    <Text
-                                                        style={{fontSize:16,textAlign:"center",color:"#fff"}}>
-                                                        确定
-                                                    </Text>
-                                                </TouchableHighlight>
+                                                        <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
+                                                            borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
+                                                            borderRadius:5}} onPress={this.submitPay }>
+                                                            <Text
+                                                                style={{fontSize:16,textAlign:"center",color:"#fff"}}>
+                                                                确定
+                                                            </Text>
+                                                        </TouchableHighlight>
 
 
-                                            </View>
+                                                    </View>
 
-                                        </ScrollView>
+                                                </ScrollView>
+                                        }
+
+
 
 
                                     </View>
@@ -419,9 +444,9 @@ export default class GoodSelect extends Component {
                                                                     borderBottomWidth:1,
                                                                     height: 135
                                                                 }}>
-                                                                    <View style={{height:80, marginTop: 5}}>
+                                                                    <TouchableHighlight underlayColor="transparent" onPress={()=>{this.seeImg(item.goodsImg)}} style={{height:80, marginTop: 5}}>
                                                                         <Image source={item.goodsImg?{uri: item.goodsImg}:noImg} style={{width:80,height:80,resizeMode:"contain"}}/>
-                                                                    </View>
+                                                                    </TouchableHighlight>
                                                                     <View style={{padding:10,flex:1}}>
                                                                         <Text style={{fontWeight:"bold"}}>{item.goodsName}</Text>
                                                                         <View style={{marginTop:5,flexDirection:"row",alignItems:'center'}}>

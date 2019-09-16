@@ -24,6 +24,7 @@ import selectIcon from '../../../pay/selectIcon.png'
 import s1 from '../../GoodSelect/style/234.png'
 import AddPic from './addPic'
 import moment from "moment";
+import TabHome from "../homePage";
 
 
 const CustomChildren = props => {
@@ -161,7 +162,25 @@ export default class Repair extends Component {
             date
         })
     }
+    comfirm = (data)=>{
+        // const { navigate } = this.props.navigation;
+        this.setState({
+            flag:true
+        },()=>{
+            axios.post(`/tenant/submitRepair`, data)
+                .then((response) => {
+                    Toast.info(response.data.message, 1);
+                    console.log(response);
 
+
+                })
+                .catch((error) =>{
+                    console.log(error);
+
+                });
+        })
+
+    }
     //提交保修单
     submitBtn = ()=> {
 
@@ -204,40 +223,21 @@ export default class Repair extends Component {
             Toast.info("请输入报修内容和报修日期", 1);
 
         }else{
+            let data = {
+                content: text,
+                aboutDate:moment(date).format('YYYY-MM-DD HH:mm:ss'),
+                noPerson:noOneStr,
+                repairImg:this.state.roomImg
+
+            }
             //const { navigate } = this.props.navigation;
-
-            this.setState({
-                flag:true
-            },()=>{
-                axios.post(`/tenant/submitRepair`, {
-                    content: text,
-                    aboutDate:moment(date).format('YYYY-MM-DD HH:mm:ss'),
-                    noPerson:noOneStr,
-                    repairImg:this.state.roomImg
-
-                })
-                    .then( (response)=> {
-                        Toast.info(response.data.message, 1);
-                        console.log(response);
-
-                        this.setState({
-                            flag:response.data.code==0?true:false
-                        })
-
-
-                    })
-                    .catch((error) =>{
-                        console.log(error);
-                        this.setState({
-                            flag:false
-                        })
-                    });
-            })
-
-
-
-
-
+            Alert.alert('提交','确认提交吗？',
+                [
+                    {text:"取消", onPress:this.cancelSelected},
+                    {text:"确认", onPress:()=>this.comfirm(data)}
+                ],
+                { cancelable: false }
+            );
 
         }
 

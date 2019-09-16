@@ -151,6 +151,28 @@ export default class Clean extends Component {
         Toast.info('已提交申请，不可重复提交',1);
     }
 
+    comfirm = (data)=>{
+
+        this.setState({
+            flag:true
+        },()=>{
+            axios.post(`/tenant/submitCleanup`, data)
+                .then((response) => {
+                    Toast.info(response.data.message, 1);
+                    console.log(response);
+                    this.setState({
+                        flag:true
+                    })
+
+                })
+                .catch((error) =>{
+                    console.log(error);
+
+                });
+        })
+
+    }
+
     //提交保洁单
     submitBtn = ()=> {
 
@@ -192,39 +214,21 @@ export default class Clean extends Component {
             Toast.info("请输入保洁内容和保洁日期", 1);
 
         }else{
-
-            this.setState({
-                flag:true
-            },()=> {
-
-                axios.post(`/tenant/submitCleanup`, {
-                    content: text,
-                    aboutDate: moment(date).format('YYYY-MM-DD HH:mm:ss'),
-                    noPerson: noOneStr,
+            let data = {
+                content: text,
+                aboutDate: moment(date).format('YYYY-MM-DD HH:mm:ss'),
+                noPerson: noOneStr,
 
 
-                })
-                    .then((response) => {
-                        Toast.info(response.data.message, 1);
-                        console.log(response);
+            }
 
-                        this.setState({
-                            flag:response.data.code==0?true:false
-                        })
-
-
-                    })
-                    .catch((error) =>{
-                        console.log(error);
-                        this.setState({
-                            flag:false
-                        })
-                    });
-
-
-            })
-
-
+            Alert.alert('提交','确认提交吗？',
+                [
+                    {text:"取消", onPress:this.cancelSelected},
+                    {text:"确认", onPress:()=>this.comfirm(data)}
+                ],
+                { cancelable: false }
+            );
 
 
 

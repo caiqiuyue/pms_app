@@ -645,15 +645,15 @@ export default class Login extends Component {
                             <Text style={{color:"grey"}}>忘记密码?</Text>
                         </TouchableHighlight>
 
-                        {/*<TouchableHighlight onPress={() => {*/}
+                        <TouchableHighlight onPress={() => {
 
 
-                            {/*const { navigate } = this.props.navigation;*/}
-                            {/*//跳转页面*/}
-                            {/*navigate('Register',{ user: '' })*/}
-                        {/*} }>*/}
-                            {/*<Text  style={{color:"#ef813a"}}>快速注册</Text>*/}
-                        {/*</TouchableHighlight>*/}
+                            const { navigate } = this.props.navigation;
+                            //跳转页面
+                            navigate('Register',{ user: '' })
+                        } }>
+                            <Text  style={{color:"#ef813a"}}>注册</Text>
+                        </TouchableHighlight>
 
                     </View>
                 </View>

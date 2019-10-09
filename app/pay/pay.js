@@ -4,8 +4,9 @@ import {
     View,
     Image, StyleSheet, Platform,
     TouchableHighlight,
-    DeviceEventEmitter,Modal,ScrollView,
-    Alert
+    DeviceEventEmitter,Modal,ScrollView,TextInput,
+    Alert,
+    Linking
 } from 'react-native';
 
 import {WhiteSpace,Toast,Accordion, List} from 'antd-mobile'
@@ -14,6 +15,8 @@ import alipay from './alipay.png'
 import wechatpay from './wechatpay.png'
 import bankcard from './bankcard.png'
 import selectIcon from './selectIcon.png'
+import zfb from './zfb.png'
+import zfbTeach from './zfbTeach.png'
 import add from './add.png'
 import wallet from './wallet.png'
 
@@ -213,13 +216,17 @@ export default class Clean extends Component {
         this.state = {
             wechatPayType:false,
             url:"",
+            alipayTradeNo:"",
             dataPay:{
             },
             bankcardNo:false,
             data:null,
+            tradeNo:'',
             yiPayData:null,
             bankcard:[
             ],
+            zfbImg:false,
+            // zfbPayFlag:false,
             cardType:null,
             poundage:0,
             availableAmount:0,
@@ -228,6 +235,7 @@ export default class Clean extends Component {
             animationType: 'none',//none slide fade
             modalVisible: false,//模态场景是否可见
             transparent: true,//是否透明显示
+            modalName:'',
             coupon:[],
             hotelNo:'',
             couponMoney:0,
@@ -441,7 +449,8 @@ export default class Clean extends Component {
             }).then(ret => {
                 console.log(ret,'ret');
                 this.setState({
-                    hotelNo:ret.hotelNo
+                    hotelNo:ret.hotelNo,
+                    // zfbPayFlag:ret.hotelNo=="H10055"||ret.hotelNo=="H10057"?true:false
                 },()=>{
                     this.getMyCoupon();
                 })
@@ -476,7 +485,10 @@ export default class Clean extends Component {
 
     //代金券弹框
     couponPay=()=>{
-        this._setModalVisible(true);
+        this.setState({
+            modalName:'代金券',
+            modalVisible:true
+        })
         // this.getMyCoupon()
     }
 
@@ -775,6 +787,55 @@ export default class Clean extends Component {
                 this.setState({
                     bankcard
                 })
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    openZFB = ()=>{
+        Alert.alert('打开支付宝','支付完成后必须回到该页面填写支付宝订单号！！！！',
+            [
+                // {text:"取消", onPress:this.cancelSelected},
+                {text:"确认", onPress:()=>{
+
+                        Linking.openURL('alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/tsx03647vxqajtgeoflyu4c');
+
+                    }}
+            ],
+            { cancelable: false }
+        );
+
+    }
+
+
+    //支付宝扫码支付
+    submitAlipay = ()=>{
+        let {tradeNo,alipayTradeNo} = this.state
+
+
+        if(!alipayTradeNo){
+            alert("请输入支付宝交易号")
+            return
+        }
+
+        axios.post(`/pay/alipayFinish`, {
+            tradeNo,
+            alipayTradeNo
+
+        })
+            .then( (response)=> {
+                console.log(response,'支付宝扫码支付');
+                if(response.data.code==0){
+                    this.setState({modalVisible:false},()=>{
+                        Toast.info('支付成功',2)
+                    })
+
+                }else {
+                    alert(response.data.message)
+                }
+
 
             })
             .catch(function (error) {
@@ -1110,6 +1171,13 @@ export default class Clean extends Component {
                         console.log(error);
                     });
             })
+        }else if(item==6){
+            // 支付宝支付
+            this.setState({
+                wechatPayType:wechatPayType==6?false:6,
+                // bankcardNo:wechatPayType==1?false:item,
+
+            })
         }
 
     }
@@ -1292,7 +1360,8 @@ export default class Clean extends Component {
 
 
 
-            }else if(wechatPayType==5){
+            }
+            else if(wechatPayType==5){
 
                 //朋友代付
 
@@ -1377,6 +1446,97 @@ export default class Clean extends Component {
                                             Alert.alert('请安装微信');
                                         }
                                     });
+                            }
+
+
+
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+
+                }).catch(err => {
+                    //如果没有找到数据且没有sync方法，
+                    //或者有其他异常，则在catch中返回
+                    console.warn(err.message);
+                    switch (err.name) {
+                        case 'NotFoundError':
+                            break;
+                        case 'ExpiredError':
+                            break;
+                    }
+                });
+
+
+
+
+            }
+            else if(wechatPayType==6){
+
+                //朋友代付
+
+                if(this.state.Accounts!=null){
+                    dataPay.price = this.state.money-this.state.couponMoney;
+                    dataPay.yiPay.price = this.state.money-this.state.couponMoney;
+                }
+
+
+                data.yiPay.webCallbackUrl='http://www.fangapo.cn/yiPaySuccess.html';
+                data.yiPay.payTool='OUR_ALIPAY';
+                data.yiPay.credit=2;
+                data.yiPay.couponIds=this.state.couponId;
+
+
+                //读取
+                storage.load({
+                    key: 'username',
+                    // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
+                    autoSync: false
+                }).then(ret => {
+
+                    console.log(ret,'ret');
+                    if(ret.payOrderId){
+                        data.yiPay.payOrderId=ret.payOrderId
+                    }
+
+
+                    axios.post(`/pay/orderConsume`,data.yiPay)
+                        .then( (response)=> {
+                            console.log(response,'支付宝');
+
+                            if(response.data.code==1){
+                                Toast.info(response.data.message, 1);
+                            }else if(response.data.code==0){
+                                DeviceEventEmitter.emit('yiPay','aliPay');
+
+                                this.setState({
+                                    modalName:'',
+                                    modalVisible:true,
+                                    tradeNo:response.data.tradeNo,
+                                    alipayTradeNo:''
+                                })
+
+                                //读取
+                                storage.load({
+                                    key: 'username',
+                                    // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
+                                    autoSync: false
+                                }).then(ret => {
+                                    ret.payOrderId = response.data.payOrderId
+                                    return ret
+
+                                }).catch(err => {
+                                    //如果没有找到数据且没有sync方法，
+                                    //或者有其他异常，则在catch中返回
+                                    console.warn(err.message);
+                                    switch (err.name) {
+                                        case 'NotFoundError':
+                                            break;
+                                        case 'ExpiredError':
+                                            break;
+                                    }
+                                });
                             }
 
 
@@ -1525,7 +1685,8 @@ export default class Clean extends Component {
 
                 }
 
-            }else if(wechatPayType==2){
+            }
+            else if(wechatPayType==2){
 
                 axios.post(`${dataPay.url}`, dataPay.dataPay)
                     .then((response) => {
@@ -1554,7 +1715,8 @@ export default class Clean extends Component {
                 });
 
                 // Toast.info("暂不支持微信支付", 1);
-            }else if(wechatPayType==3){
+            }
+            else if(wechatPayType==3){
 
                 axios.post(`${dataPay.url}`, dataPay.dataPay)
                     .then((response) => {
@@ -1693,7 +1855,7 @@ export default class Clean extends Component {
 
     render() {
 
-        let {coupon,poundage,dataPay,wechatPayType,amount,bankcardNo, typeData} = this.state;
+        let {zfbImg,modalName,coupon,poundage,dataPay,wechatPayType,amount,bankcardNo, typeData} = this.state;
         //弹框
         let modalBackgroundStyle = {
             backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : 'red',
@@ -1725,7 +1887,7 @@ export default class Clean extends Component {
                                 <View>
                                     <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
 
-                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>选择代金券</Text></View>
+                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>{modalName=='代金券'?'选择代金券':'支付宝支付'}</Text></View>
 
                                         <TouchableHighlight underlayColor={"#fff"} onPress={()=>{this._setModalVisible(false)} } style={{}}>
                                             <Image style={{height:30,width:30}} source={close}/>
@@ -1734,49 +1896,126 @@ export default class Clean extends Component {
 
                                     </View>
 
-                                    <View style={{marginTop: 10, alignItems:'center'}}>
-                                        <Text style={{color:'#ff7000', fontSize: 12, textAlign: 'center'}}>tips:不可叠加、部分叠加、无限叠加在同一种费用类型下不可同时使用</Text>
-                                    </View>
 
                                     <View style={{padding:10}}>
 
-                                        <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
-                                            <View>
-                                                {
-                                                    typeData.feeNames && typeData.feeNames.map((result,index) => {
-                                                        let num = 0;
-                                                        typeData[result.feeName].length > 0 && typeData[result.feeName].map(item => {
-                                                            if(item.flag) {
-                                                                num += item.couponMoney;
-                                                            }
-                                                        });
-                                                        return (
-                                                            <View style={{paddingTop:10, paddingBottom: 10}} key={index}>
-                                                                <Text style={{fontSize: 14, fontWeight: 'normal'}}><Text style={{fontSize: 16}}>{result.feeName}</Text>：共计优惠<Text style={{color:'red'}}>{num}元</Text></Text>
-                                                                <View style={{flexDirection:"row",flexWrap:"wrap"}}>
-                                                                    {
-                                                                        typeData[result.feeName].length > 0 && typeData[result.feeName].map((item,index) => (
-                                                                                <TouchableHighlight style={{width:"33.33%",}} underlayColor="transparent" onPress={()=>{this.selectCoupon(item, result)}} key={index}>
-                                                                                    <View style={{alignItems:"center",justifyContent:"center",padding:5,marginTop:10,marginRight:10,borderWidth:1,borderColor:!item.flag?"#f0f0f0":"#fff",backgroundColor:!item.flag?"#fff":"#ff7000",borderRadius:5}}>
-
-                                                                                        {/*{item.ifOverlay==1&&<View style={{position:"absolute" ,zIndex:999,top:0,right:0,backgroundColor:"red",padding:2}}><Text style={{color:'#fff',fontWeight:'bold'}}>叠</Text></View>}*/}
-                                                                                        {item.couponType==0&&<View style={{flexDirection:"row-reverse",marginBottom:5}}><Text>纸质</Text></View>}
-                                                                                        <Text style={{fontSize:18,color:!item.flag?"#000":"#fff",fontWeight:"bold"}}>{item.couponMoney}</Text>
-                                                                                        <Text style={{marginTop:5,color:!item.flag?"#000":"#fff",fontSize:12}}>{item.couponName}</Text>
-                                                                                        <Text style={{color:!item.flag?"#000":"#fff",marginTop:5,fontSize:12}}>满{item.condition}可用</Text>
-                                                                                        <Text style={{color:!item.flag?"#000":"#fff",marginTop:5,fontSize:12,fontWeight:"bold"}}>({item.ifOverlay==0?'不可叠加':item.ifOverlay==1?'可叠加':'无限叠加'})</Text>
-                                                                                    </View>
-                                                                                </TouchableHighlight>
-                                                                            )
-                                                                        )
+                                        {
+                                            modalName=='代金券'?
+                                                <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
+                                                    <View style={{marginTop: 10, alignItems:'center'}}>
+                                                        <Text style={{color:'#ff7000', fontSize: 12, textAlign: 'center'}}>tips:不可叠加、部分叠加、无限叠加在同一种费用类型下不可同时使用</Text>
+                                                    </View>
+                                                    <View>
+                                                        {
+                                                            typeData.feeNames && typeData.feeNames.map((result,index) => {
+                                                                let num = 0;
+                                                                typeData[result.feeName].length > 0 && typeData[result.feeName].map(item => {
+                                                                    if(item.flag) {
+                                                                        num += item.couponMoney;
                                                                     }
-                                                                </View>
-                                                            </View>
-                                                        )})
-                                                }
+                                                                });
+                                                                return (
+                                                                    <View style={{paddingTop:10, paddingBottom: 10}} key={index}>
+                                                                        <Text style={{fontSize: 14, fontWeight: 'normal'}}><Text style={{fontSize: 16}}>{result.feeName}</Text>：共计优惠<Text style={{color:'red'}}>{num}元</Text></Text>
+                                                                        <View style={{flexDirection:"row",flexWrap:"wrap"}}>
+                                                                            {
+                                                                                typeData[result.feeName].length > 0 && typeData[result.feeName].map((item,index) => (
+                                                                                        <TouchableHighlight style={{width:"33.33%",}} underlayColor="transparent" onPress={()=>{this.selectCoupon(item, result)}} key={index}>
+                                                                                            <View style={{alignItems:"center",justifyContent:"center",padding:5,marginTop:10,marginRight:10,borderWidth:1,borderColor:!item.flag?"#f0f0f0":"#fff",backgroundColor:!item.flag?"#fff":"#ff7000",borderRadius:5}}>
 
-                                            </View>
-                                        </ScrollView>
+                                                                                                {/*{item.ifOverlay==1&&<View style={{position:"absolute" ,zIndex:999,top:0,right:0,backgroundColor:"red",padding:2}}><Text style={{color:'#fff',fontWeight:'bold'}}>叠</Text></View>}*/}
+                                                                                                {item.couponType==0&&<View style={{flexDirection:"row-reverse",marginBottom:5}}><Text>纸质</Text></View>}
+                                                                                                <Text style={{fontSize:18,color:!item.flag?"#000":"#fff",fontWeight:"bold"}}>{item.couponMoney}</Text>
+                                                                                                <Text style={{marginTop:5,color:!item.flag?"#000":"#fff",fontSize:12}}>{item.couponName}</Text>
+                                                                                                <Text style={{color:!item.flag?"#000":"#fff",marginTop:5,fontSize:12}}>满{item.condition}可用</Text>
+                                                                                                <Text style={{color:!item.flag?"#000":"#fff",marginTop:5,fontSize:12,fontWeight:"bold"}}>({item.ifOverlay==0?'不可叠加':item.ifOverlay==1?'可叠加':'无限叠加'})</Text>
+                                                                                            </View>
+                                                                                        </TouchableHighlight>
+                                                                                    )
+                                                                                )
+                                                                            }
+                                                                        </View>
+                                                                    </View>
+                                                                )})
+                                                        }
+
+                                                    </View>
+                                                </ScrollView>:
+
+                                                <View>
+
+                                                    <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
+                                                        <View style={styles.a}>
+                                                            <Text style={{flex:1}}>支付说明:</Text>
+                                                            <View style={[styles.b,{flex:3}]}>
+                                                                <Text style={{color:"grey"}}>1.点击"打开支付宝"按钮,会直接进入转账页面。</Text>
+                                                                <Text style={{color:"grey"}}>2.输入转账金额,金额为
+                                                                    <Text style={{color:"red",fontWeight:"bold"}}>
+
+                                                                    {(this.state.Accounts==null)?(dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)):this.state.Accounts.toFixed(2)}
+
+                                                                    元(必须为{(this.state.Accounts==null)?(dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)):this.state.Accounts.toFixed(2)}
+                                                                    元多转或少转都会导致支付失败！！！)</Text></Text>
+                                                                <Text style={{color:"grey"}}>3.转账成功后，将支付宝交易号复制到输入框并确认。(支付宝交易号在支付宝页面-我的-账单-找到刚转账的订单点进去订单详情页-复制订单号)</Text>
+                                                            </View>
+                                                        </View>
+                                                        <View style={styles.a}>
+                                                            <Text style={{flex:1}}>支付宝订单号:</Text>
+                                                            <View style={[styles.b,{flex:3,marginTop:5}]}>
+                                                                <TextInput
+                                                                    placeholder={'请输入支付宝交易订单号'}
+                                                                    // value={this.state.username}
+                                                                    style={{minWidth:'100%',padding:10,borderRadius:5,borderColor:"grey",borderWidth:1}}
+                                                                    underlineColorAndroid="transparent"
+                                                                    onChangeText={(alipayTradeNo) => this.setState({alipayTradeNo})}
+                                                                >
+                                                                </TextInput>
+                                                            </View>
+                                                        </View>
+
+
+
+                                                        <View style={{alignItems:"center",padding:10}}>
+                                                            <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
+                                                                borderWidth:1,borderColor:"#fff",width:150,backgroundColor:"#009def",
+                                                                borderRadius:10}} onPress={this.openZFB }>
+                                                                <Text
+
+                                                                    style={{fontSize:16,textAlign:"center",color:"#fff"}}>
+                                                                    打开支付宝
+                                                                </Text>
+                                                            </TouchableHighlight>
+                                                        </View>
+
+
+                                                        <Text  style={{color:"#009def",marginTop:10,textAlign:"center",fontWeight:"bold",fontSize:18}}>支付教程</Text>
+
+
+                                                        <View>
+                                                            <Image style={{width:"100%",height:3000,resizeMode:"contain"}} source={zfbTeach}/>
+                                                            <View>
+                                                                <Text style={{color:"red",marginTop:10}}>有任何问题请联系我们</Text>
+                                                                <Text onPress={()=>{Linking.openURL('tel:15801327369');} } style={{color:"red",marginTop:10}}>手机号:15801327369</Text>
+                                                                <Text style={{color:"red",marginTop:10}} selectable={true}>微信:huiz42b</Text>
+                                                                <Text style={{color:"red",marginTop:10}} selectable={true}>微信:ZHANG411945</Text>
+                                                            </View>
+                                                        </View>
+
+                                                    </ScrollView>
+                                                    <View style={{alignItems:"center",padding:10}}>
+                                                        <TouchableHighlight underlayColor={"#367d80"} style={{padding:10,
+                                                            borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
+                                                            borderRadius:10}} onPress={this.submitAlipay }>
+                                                            <Text
+
+                                                                style={{fontSize:16,textAlign:"center",color:"#fff"}}>
+                                                                确定
+                                                            </Text>
+                                                        </TouchableHighlight>
+                                                    </View>
+                                                </View>
+
+                                        }
 
 
                                     </View>
@@ -2005,6 +2244,38 @@ export default class Clean extends Component {
 
                     </TouchableHighlight>
 
+                    {
+                        // zfbPayFlag&&
+                        <TouchableHighlight underlayColor="transparent"
+                                            onPress={()=>this.selectPayType(6)}
+                                            style={[styles.view,styles.padd]}>
+
+                            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+
+
+                                <View style={{flexDirection:"row",alignItems:"center"}}>
+                                    <View>
+                                        <Image style={styles.payImg} source={alipay}/>
+                                    </View>
+
+                                    <View style={{width:100}}>
+                                        <Text>支付宝支付</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{...Platform.select({
+
+                                    }),backgroundColor:wechatPayType == 6 ? "#55b72d" :'#fff',
+                                    width:20,height:20,borderRadius:10,borderColor:"#f0f0f0",borderWidth:1,overflow:"hidden"}} >
+                                    <Image style={styles.paySelect} source={selectIcon}/>
+                                </View>
+                            </View>
+
+                        </TouchableHighlight>
+                    }
+
+
+
 
 
 
@@ -2122,6 +2393,14 @@ const styles = StyleSheet.create({
 
         })
 
+    },
+
+    a:{
+        marginTop:10
+    },
+
+    b:{
+        // marginLeft:10,flex:1,
     },
 
     view:{

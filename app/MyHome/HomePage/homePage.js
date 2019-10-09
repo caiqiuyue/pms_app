@@ -113,13 +113,17 @@ class A extends Component {
     }
     componentWillMount(){
 
-        // Alert.alert('下载最新app','为了更好的使用体验，请下载最新版本app！,安卓用户请先卸载app重新扫码下载',
-        //     [
-        //         // {text:"取消", onPress:this.cancelSelecte},
-        //         {text:"确认", onPress:this.walletSelected}
-        //     ],
-        //     { cancelable: false }
-        // );
+        // if(Platform.OS!== 'android'){
+        //     Alert.alert('下载最新app','为了更好的使用体验，ios用户请下载最新版本app！',
+        //         [
+        //             // {text:"取消", onPress:this.cancelSelecte},
+        //             {text:"确认", onPress:this.walletSelected}
+        //         ],
+        //         { cancelable: false }
+        //     );
+        // }
+
+
 
 
         CodePush.sync();

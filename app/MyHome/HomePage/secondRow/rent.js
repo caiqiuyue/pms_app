@@ -75,7 +75,7 @@ export default class Rent extends Component {
 
 
         this.yiPay =  DeviceEventEmitter.addListener('yiPay', (item)=>{
-            if(item=='yiPay' || item=='wechatPay'){
+            if(item=='yiPay' || item=='wechatPay' ||item=='aliPay'){
                 // alert(1234)
                 this.onRefresh();
             }

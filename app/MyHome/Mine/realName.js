@@ -399,12 +399,12 @@ export default class Mine extends React.Component {
                             </View>
 
 
-                            {this.state.datas.cardCode&&
+                            {this.state.datas.cardCode?
                             <View style={{padding:10}}>
                                 <Text>姓名:{this.state.datas.name}</Text>
                                 <Text>身份证号:{this.state.datas.cardCode}</Text>
                                 <Text>住址:{this.state.datas.cardAddress}</Text>
-                            </View>}
+                            </View>:null}
 
                             <View style={{alignItems:"center",marginBottom:30}}>
 

@@ -113,8 +113,8 @@ class A extends Component {
     }
     componentWillMount(){
 
-        // if(Platform.OS!== 'android'){
-        //     Alert.alert('下载最新app','为了更好的使用体验，ios用户请下载最新版本app！',
+        // if(Platform.OS== 'android'){
+        //     Alert.alert('下载最新app','为了更好的使用体验，安卓用户请卸载app后下载最新版本app！',
         //         [
         //             // {text:"取消", onPress:this.cancelSelecte},
         //             {text:"确认", onPress:this.walletSelected}

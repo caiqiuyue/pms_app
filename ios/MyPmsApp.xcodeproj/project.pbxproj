@@ -36,7 +36,7 @@
 		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* MyPmsAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MyPmsAppTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
-		3E63C5ADD67F4D77BF1DC5F2 /* libAlipayModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 946643FA26E846659404A093 /* libAlipayModule.a */; };
+		3E63C5ADD67F4D77BF1DC5F2 /* libAlipayModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 946643FA26E846659404A093 /* libAlipayModule.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		4BDC706523384A578E44584E /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51A4EDB28332485CB8D7D56B /* CFNetwork.framework */; };
 		53D2B03744AE4DBC9158329F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B683E3E6EB4F4719BD0FD52B /* CoreGraphics.framework */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };

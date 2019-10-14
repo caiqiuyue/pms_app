@@ -101,9 +101,9 @@ android {
     defaultConfig {
         applicationId "com.mypmsapp"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 26
         versionCode 1
-        versionName "1.0.20"
+        versionName "1.0.22"
 
 
         manifestPlaceholders = [

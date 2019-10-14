@@ -1973,19 +1973,33 @@ export default class Clean extends Component {
                                                             </View>
                                                         </View>
 
+                                                        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                                                            <View style={{alignItems:"center",padding:10}}>
+                                                                <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
+                                                                    borderWidth:1,borderColor:"#fff",width:150,backgroundColor:"#009def",
+                                                                    borderRadius:10}} onPress={this.openZFB }>
+                                                                    <Text
 
+                                                                        style={{fontSize:16,textAlign:"center",color:"#fff"}}>
+                                                                        打开支付宝
+                                                                    </Text>
+                                                                </TouchableHighlight>
+                                                            </View>
 
-                                                        <View style={{alignItems:"center",padding:10}}>
-                                                            <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
-                                                                borderWidth:1,borderColor:"#fff",width:150,backgroundColor:"#009def",
-                                                                borderRadius:10}} onPress={this.openZFB }>
-                                                                <Text
+                                                            <View style={{alignItems:"center",padding:10}}>
+                                                                <TouchableHighlight underlayColor={"#367d80"} style={{padding:10,
+                                                                    borderWidth:1,borderColor:"#fff",width:150,backgroundColor:"#f17e3a",
+                                                                    borderRadius:10}} onPress={this.submitAlipay }>
+                                                                    <Text
 
-                                                                    style={{fontSize:16,textAlign:"center",color:"#fff"}}>
-                                                                    打开支付宝
-                                                                </Text>
-                                                            </TouchableHighlight>
+                                                                        style={{fontSize:16,textAlign:"center",color:"#fff"}}>
+                                                                        确定支付
+                                                                    </Text>
+                                                                </TouchableHighlight>
+                                                            </View>
                                                         </View>
+
+
 
 
                                                         <Text  style={{color:"#009def",marginTop:10,textAlign:"center",fontWeight:"bold",fontSize:18}}>支付教程</Text>
@@ -2002,17 +2016,7 @@ export default class Clean extends Component {
                                                         </View>
 
                                                     </ScrollView>
-                                                    <View style={{alignItems:"center",padding:10}}>
-                                                        <TouchableHighlight underlayColor={"#367d80"} style={{padding:10,
-                                                            borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
-                                                            borderRadius:10}} onPress={this.submitAlipay }>
-                                                            <Text
 
-                                                                style={{fontSize:16,textAlign:"center",color:"#fff"}}>
-                                                                确定
-                                                            </Text>
-                                                        </TouchableHighlight>
-                                                    </View>
                                                 </View>
 
                                         }

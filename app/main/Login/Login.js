@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {
     Keyboard,StyleSheet, Text, View, TouchableHighlight, AsyncStorage, Image, TextInput, Platform,
-    NetInfo,Modal
+    NetInfo,Modal,ScrollView
 } from 'react-native';
 import { List, InputItem,  WingBlank, Toast,Button } from 'antd-mobile';
 import axios from 'axios'
@@ -482,22 +482,26 @@ export default class Login extends Component {
 
                                     </View>
 
-                                    <View style={{padding:10,flexDirection:"row",justifyContent:"space-around",flexWrap:"wrap"}}>
-                                        {
-                                            contractData.length>0&& contractData.map((item,index)=>
+                                    <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
+                                        <View style={{padding:10,flexDirection:"row",justifyContent:"space-around",flexWrap:"wrap"}}>
+                                            {
+                                                contractData.length>0&& contractData.map((item,index)=>
 
-                                                <TouchableHighlight onPress={()=>{this.chooseConstract(item)}} underlayColor="transparent" key={index} style={{width:"48%",padding:10,borderWidth:1,borderColor:"#f0f0f0",borderRadius:10,backgroundColor:item.flag?"#f17e3a":"#fff",marginTop:10}}>
-                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
-                                                        <Text>{item.hotelName}</Text>
-                                                        <Text style={{marginTop:5,fontSize:16,fontWeight:"bold"}}>{item.roomNo}</Text>
-                                                        <Text style={{marginTop:5,}}>{item.status==1?'在住':'已退房'}</Text>
-                                                    </View>
-                                                </TouchableHighlight>
+                                                    <TouchableHighlight onPress={()=>{this.chooseConstract(item)}} underlayColor="transparent" key={index} style={{width:"48%",padding:10,borderWidth:1,borderColor:"#f0f0f0",borderRadius:10,backgroundColor:item.flag?"#f17e3a":"#fff",marginTop:10}}>
+                                                        <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                            <Text>{item.hotelName}</Text>
+                                                            <Text style={{marginTop:5,fontSize:16,fontWeight:"bold"}}>{item.roomNo}</Text>
+                                                            <Text style={{marginTop:5,}}>{item.status==1?'在住':'已退房'}</Text>
+                                                        </View>
+                                                    </TouchableHighlight>
 
-                                            )
-                                        }
+                                                )
+                                            }
 
-                                    </View>
+                                        </View>
+                                    </ScrollView>
+
+
 
                                     <View style={{alignItems:"center",marginTop:10}}>
                                         <TouchableHighlight underlayColor={"transparent"} style={{padding:10,

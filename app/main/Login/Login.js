@@ -232,10 +232,16 @@ export default class Login extends Component {
             console.log(connectionInfo,'connectionInfo');
             if(connectionInfo.type=='none'){
 
-                Toast.info('暂无网络链接',1)
-            }else if(connectionInfo.type=='unknown'){
-                // Toast.info('联网状态异常',1)
+                Toast.info('暂无网络链接，请联网后使用！！！',1)
             }
+            // else if(connectionInfo.type=='unknown'){
+            //     // Toast.info('联网状态异常',1)
+            // }
+            else{
+
+                Toast.loading('loading');
+            }
+
         });
 
         //监听网络变化事件
@@ -325,6 +331,8 @@ export default class Login extends Component {
 
             this.netInfo();
 
+
+
             //这里发送Ajax
             axios.post(`${url}/tenant/loginTenant`, {
                 phone: this.state.phone,
@@ -334,9 +342,7 @@ export default class Login extends Component {
                 .then((response)=> {
                     console.log(response);
 
-                    if(response.data.code===1){
-                        Toast.info(response.data.message, 1);
-                    } else {
+                    if(response.data.code==0){
                         let tokenKey = {
                             tokenKey:response.data.tokenKey
                         };
@@ -381,10 +387,14 @@ export default class Login extends Component {
                                                         expires: null
                                                     });
                                                     //跳转页面
+                                                    Toast.hide()
                                                     navigate('Home',{ user: '' });
                                                     Reset();
+
+
                                                 }else {
                                                     Toast.info(ree.data.message, 1);
+
                                                 }
 
                                             })
@@ -413,7 +423,7 @@ export default class Login extends Component {
                             .catch(function (error) {
                                 console.log(error);
                             });
-                        
+
                         console.log(username);
 
                         let setup = {
@@ -433,7 +443,10 @@ export default class Login extends Component {
 
 
 
+                    }else {
+                        Toast.info(response.data.message, 1);
                     }
+
 
                 })
                 .catch(function (error) {

@@ -19,7 +19,7 @@ export default class RefundRentDetail extends React.Component {
             allData2:0,
             allPrice:0
 
-            
+
 
         };
 
@@ -29,7 +29,7 @@ export default class RefundRentDetail extends React.Component {
 
     componentWillMount(){
 
-        
+
         this.props.navigation.getParam = (name) => {
             let params = this.props.navigation && this.props.navigation.state && this.props.navigation.state.params || {};
             if(name) {
@@ -41,7 +41,7 @@ export default class RefundRentDetail extends React.Component {
 
         const {getParam} = this.props.navigation;
         const data = getParam("user");
-        
+
 
 
         // if(JSON.parse(data.bill_json).length != 0 ){
@@ -116,9 +116,9 @@ export default class RefundRentDetail extends React.Component {
 
 
 
-        
+
         //console.log(data2);
-        
+
     }
 
     submitBtn = () => {
@@ -156,29 +156,30 @@ export default class RefundRentDetail extends React.Component {
 
             else {
 
-                axios.post(`/self/finishRequisition`,   {
-                    id:this.state.data.id
-
-                })
-                    .then((response) => {
-                        console.log(response);
-
-                        if(this.state.allData2-0==0&&this.state.allData1-0==0){
-                            Toast.info('已确认',1);
-                        }else {
-                            Toast.info('请等待财务退款',1);
-                        }
-
-                        this.setState({
-                            flag:true
-                        })
-
+                this.setState({
+                    flag:true
+                },()=>{
+                    axios.post(`/self/finishRequisition`,   {
+                        id:this.state.data.id
 
                     })
-                    .catch(function (err) {
-                        console.log(err);
+                        .then((response) => {
+                            console.log(response);
 
-                    });
+                            if(this.state.allData2-0==0&&this.state.allData1-0==0){
+                                Toast.info('已确认',1);
+                            }else {
+                                Toast.info('请等待财务退款',1);
+                            }
+
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+
+                        });
+                })
+
+
             }
 
         }
@@ -469,7 +470,7 @@ const styles = StyleSheet.create({
     userItems:{
         backgroundColor:"#fff",flexDirection:"row",position:"absolute",zIndex:999,
     },
-    
+
 
     textcolor:{
         color:"#000"

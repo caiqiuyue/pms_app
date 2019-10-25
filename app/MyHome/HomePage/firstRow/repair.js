@@ -62,6 +62,7 @@ export default class Repair extends Component {
             code:3,
             starCode:0,
             roomImg:"",
+            keeping:"",
             flag:false,
             params:{},
             count:1,
@@ -101,13 +102,14 @@ export default class Repair extends Component {
         const {getParam} = this.props.navigation;
         const datas = getParam("user");
         let param = datas.data;
-        
+
         console.log(datas);
 
         this.setState({
             date:new Date(),
             params:param,
-            count:datas.count
+            count:datas.count,
+            keeping:datas.keeping,
         });
 
 
@@ -204,7 +206,7 @@ export default class Repair extends Component {
 
 
 
-        
+
         if(date==""){
             Toast.info("请选择维修时间", 1);
             return
@@ -403,8 +405,8 @@ export default class Repair extends Component {
         //获取个人报修历史
         const {getParam} = this.props.navigation;
         const param = getParam("user");
-        
-        
+
+
 
         //选择维修日期
         const nowTimeStamp = Date.now();
@@ -451,7 +453,7 @@ export default class Repair extends Component {
                                                 <Text>维修政策：</Text>
                                             </View>
                                             <WhiteSpace size="lg"/>
-                                            <Text style={{color:'grey'}}>免费维修，仅限非人为造成的维修，否则按次加收维修费用</Text>
+                                            <Text style={{color:'grey'}}>{this.state.keeping}</Text>
                                             <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
 
 

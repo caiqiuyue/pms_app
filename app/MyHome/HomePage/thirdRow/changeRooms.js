@@ -7,7 +7,7 @@ import {
     Picker,
     View,
     Image,
-    ScrollView,
+    ScrollView, TextInput,
 
 } from 'react-native';
 
@@ -29,6 +29,7 @@ export default class ChangeRooms extends Component {
             agreeChecked: false,
             data:{},
             date:"",
+            remark:"",
             name:[],
             allData:[],
             status:"",
@@ -84,15 +85,15 @@ export default class ChangeRooms extends Component {
 
     submitBtn = ()=> {
 
-        let{date,newRoomNo,agreeChecked,flag} = this.state;
+        let{date,remark,flag} = this.state;
 
         if(date==''){
             Toast.info('请选择换房日期',1);
             return
         }
 
-        if(newRoomNo=="" && !agreeChecked){
-            Toast.info('请选择房间',1);
+        if(!remark){
+            Toast.info('请填写换房原因',1);
         }else{
 
             if(flag){
@@ -100,7 +101,7 @@ export default class ChangeRooms extends Component {
             }else{
                 axios.post(`/self/submitRequisition`, {
                     type: "3",
-                    newRoomNo:newRoomNo,
+                    remark:remark,
                     aboutDate:moment(date).format("YYYY-MM-DD")
                 })
                     .then((response)=> {
@@ -314,106 +315,138 @@ export default class ChangeRooms extends Component {
                                                             <View><Text style={{color:"#000"}}>{data.roomNo}</Text></View>
                                                             <View><Text style={{marginLeft:30,color:"#000"}}>{data.rent_price}元/月</Text></View>
                                                         </View>
+                                                        <WhiteSpace size="lg"/>
+                                                        <View>
+                                                            <DatePicker
+                                                                extra="请选择换房日期>"
+                                                                format={val => formatDate(val)}
+                                                                value={this.state.date}
+                                                                mode="date"
+                                                                minDate={minDate}
+                                                                onChange={date => this.setState({date})}
+                                                            >
+                                                                <List.Item><Text style={{fontSize:16}}>入住日期:</Text></List.Item>
+                                                            </DatePicker>
+                                                        </View>
+                                                        <WhiteSpace size="lg"/>
+                                                        <View style={{flexDirection:"row",marginTop:30}}>
+                                                            <View><Text>换房原因:</Text></View>
+                                                            <View style={{flex:1,paddingLeft:10}}>
+                                                                <TextInput
+                                                                    multiline={true}
+                                                                    underlineColorAndroid="transparent"
+                                                                    style={{height: 100,
+                                                                        borderColor:"grey",borderWidth:1,padding:0,
+                                                                        borderRadius:5}}
+
+                                                                    placeholder="请填写换房原因"
+                                                                    onChangeText={(remark) => this.setState({remark})}
+                                                                />
+
+                                                            </View>
+                                                        </View>
+                                                        <WhiteSpace size="lg"/>
+                                                        <View style={{alignItems:"center"}}>
+                                                            <TouchableHighlight underlayColor={flag ? "#fff" : "#367d80"} style={{padding:10,
+                                                                borderWidth:1,borderColor:flag ? "#000" : "#fff",width:100,backgroundColor:flag ? "#fff" : "#f17e3a",
+                                                                borderRadius:10}} onPress={this.submitBtn }>
+                                                                <Text
+
+                                                                    style={{fontSize:16,textAlign:"center",color:flag ? "#f0f0f0":"#fff"}}>
+                                                                    申请换房
+                                                                </Text>
+                                                            </TouchableHighlight>
+                                                        </View>
                                                     </View>
 
-                                                    {this.state.dataRoom?
-                                                        (<View>
+                                                    {/*{this.state.dataRoom?*/}
+                                                        {/*(<View>*/}
 
 
-                                                            <WhiteSpace size="lg"/>
-                                                            <View>
-                                                                <DatePicker
-                                                                    extra="请选择换房日期>"
-                                                                    format={val => formatDate(val)}
-                                                                    value={this.state.date}
-                                                                    mode="date"
-                                                                    minDate={minDate}
-                                                                    onChange={date => this.setState({date})}
-                                                                >
-                                                                    <List.Item><Text style={{fontSize:16}}>入住日期:</Text></List.Item>
-                                                                </DatePicker>
-                                                            </View>
-                                                            <WhiteSpace size="lg"/>
-                                                            <View style={{flexDirection:"row"}}>
-
-                                                                <View  style={{marginLeft:15}}>
-                                                                    <Text>可换房间：</Text>
-                                                                </View>
-
-                                                                <View  style={{flexDirection:"row"}}>
-                                                                    <View>
-                                                                        <TouchableHighlight underlayColor='transparent' onPress={this.allRoom} >
-                                                                            <Text  style={{color:!Allflag ? "#000":"grey"}}>全部</Text>
-                                                                        </TouchableHighlight>
-                                                                    </View>
-                                                                    {
-                                                                        this.state.name.map((item,index)=>{
-                                                                            return <TouchableHighlight  onPress={()=>{this.bulidingName(item)}} key={index} underlayColor='transparent' style={{marginLeft:10}}>
-                                                                                <Text style={{color:item.flag ? "#000":"grey"}}>{item.name}</Text>
-                                                                            </TouchableHighlight>
-                                                                        })
-                                                                    }
-
-                                                                </View>
-
-                                                            </View>
-
+                                                            {/*<WhiteSpace size="lg"/>*/}
                                                             {/*<View>*/}
-                                                            {/*<Flex>*/}
-                                                            {/*<Flex.Item>*/}
-                                                            {/*<AgreeItem data-seed="logId" onChange={this.agree} checked={this.state.agreeChecked}>*/}
-                                                            {/*<Text style={{color:"grey"}}>房间由管家分配</Text>*/}
-                                                            {/*</AgreeItem>*/}
-                                                            {/*</Flex.Item>*/}
-                                                            {/*</Flex>*/}
+                                                                {/*<DatePicker*/}
+                                                                    {/*extra="请选择换房日期>"*/}
+                                                                    {/*format={val => formatDate(val)}*/}
+                                                                    {/*value={this.state.date}*/}
+                                                                    {/*mode="date"*/}
+                                                                    {/*minDate={minDate}*/}
+                                                                    {/*onChange={date => this.setState({date})}*/}
+                                                                {/*>*/}
+                                                                    {/*<List.Item><Text style={{fontSize:16}}>入住日期:</Text></List.Item>*/}
+                                                                {/*</DatePicker>*/}
+                                                            {/*</View>*/}
+                                                            {/*<WhiteSpace size="lg"/>*/}
+                                                            {/*<View style={{flexDirection:"row"}}>*/}
+
+                                                                {/*<View  style={{marginLeft:15}}>*/}
+                                                                    {/*<Text>可换房间：</Text>*/}
+                                                                {/*</View>*/}
+
+                                                                {/*<View  style={{flexDirection:"row"}}>*/}
+                                                                    {/*<View>*/}
+                                                                        {/*<TouchableHighlight underlayColor='transparent' onPress={this.allRoom} >*/}
+                                                                            {/*<Text  style={{color:!Allflag ? "#000":"grey"}}>全部</Text>*/}
+                                                                        {/*</TouchableHighlight>*/}
+                                                                    {/*</View>*/}
+                                                                    {/*{*/}
+                                                                        {/*this.state.name.map((item,index)=>{*/}
+                                                                            {/*return <TouchableHighlight  onPress={()=>{this.bulidingName(item)}} key={index} underlayColor='transparent' style={{marginLeft:10}}>*/}
+                                                                                {/*<Text style={{color:item.flag ? "#000":"grey"}}>{item.name}</Text>*/}
+                                                                            {/*</TouchableHighlight>*/}
+                                                                        {/*})*/}
+                                                                    {/*}*/}
+
+                                                                {/*</View>*/}
+
                                                             {/*</View>*/}
 
-                                                            <WhiteSpace size="lg"/>
+                                                            {/*/!*<View>*!/*/}
+                                                            {/*/!*<Flex>*!/*/}
+                                                            {/*/!*<Flex.Item>*!/*/}
+                                                            {/*/!*<AgreeItem data-seed="logId" onChange={this.agree} checked={this.state.agreeChecked}>*!/*/}
+                                                            {/*/!*<Text style={{color:"grey"}}>房间由管家分配</Text>*!/*/}
+                                                            {/*/!*</AgreeItem>*!/*/}
+                                                            {/*/!*</Flex.Item>*!/*/}
+                                                            {/*/!*</Flex>*!/*/}
+                                                            {/*/!*</View>*!/*/}
 
-                                                            <View style={{flexDirection:"row",justifyContent:"space-between",marginLeft:15,marginRight:15}}>
-                                                                <View  style={{flexDirection:"row"}}><Text style={{color:"grey"}}>价格：</Text><Text style={{color:"red"}}>¥{room.price?room.price:'--'}</Text></View>
-                                                                <View  style={{flexDirection:"row"}}><Text style={{color:"grey"}}>面积：</Text><Text style={{color:"#000"}}>--</Text></View>
-                                                                <View  style={{flexDirection:"row"}}><Text style={{color:"grey"}}>朝向：</Text><Text style={{color:"#000"}}>{room.room_direction?room.room_direction:'--'}</Text></View>
-                                                            </View>
+                                                            {/*<WhiteSpace size="lg"/>*/}
 
-                                                            <WhiteSpace size="lg"/>
+                                                            {/*<View style={{flexDirection:"row",justifyContent:"space-between",marginLeft:15,marginRight:15}}>*/}
+                                                                {/*<View  style={{flexDirection:"row"}}><Text style={{color:"grey"}}>价格：</Text><Text style={{color:"red"}}>¥{room.price?room.price:'--'}</Text></View>*/}
+                                                                {/*<View  style={{flexDirection:"row"}}><Text style={{color:"grey"}}>面积：</Text><Text style={{color:"#000"}}>--</Text></View>*/}
+                                                                {/*<View  style={{flexDirection:"row"}}><Text style={{color:"grey"}}>朝向：</Text><Text style={{color:"#000"}}>{room.room_direction?room.room_direction:'--'}</Text></View>*/}
+                                                            {/*</View>*/}
+
+                                                            {/*<WhiteSpace size="lg"/>*/}
 
 
-                                                            <View style={{flexDirection:"row",flexWrap:"wrap"}}>
-                                                                {
-                                                                    this.state.dataRoom&&this.state.dataRoom.map((item,index)=>
-                                                                        <TouchableHighlight onPress={()=>this.chooseRoom(item)} underlayColor="transparent"
-                                                                                            style={{width:"23%",alignItems:"center",padding:5,marginRight:5,
-                                                                                                backgroundColor:item.flag ? "#f17e3a" : "#f0f0f0",marginTop:10}} key={index}>
+                                                            {/*<View style={{flexDirection:"row",flexWrap:"wrap"}}>*/}
+                                                                {/*{*/}
+                                                                    {/*this.state.dataRoom&&this.state.dataRoom.map((item,index)=>*/}
+                                                                        {/*<TouchableHighlight onPress={()=>this.chooseRoom(item)} underlayColor="transparent"*/}
+                                                                                            {/*style={{width:"23%",alignItems:"center",padding:5,marginRight:5,*/}
+                                                                                                {/*backgroundColor:item.flag ? "#f17e3a" : "#f0f0f0",marginTop:10}} key={index}>*/}
 
-                                                                            <Text style={{color:item.flag ? "#fff" : "#000"}}>{item.room_no}</Text>
+                                                                            {/*<Text style={{color:item.flag ? "#fff" : "#000"}}>{item.room_no}</Text>*/}
 
-                                                                        </TouchableHighlight>
-                                                                    )}
-                                                                <View style={{width:"24%"}}>
+                                                                        {/*</TouchableHighlight>*/}
+                                                                    {/*)}*/}
+                                                                {/*<View style={{width:"24%"}}>*/}
 
-                                                                </View>
-                                                            </View>
-                                                            <WhiteSpace size="lg"/>
+                                                                {/*</View>*/}
+                                                            {/*</View>*/}
+                                                            {/*<WhiteSpace size="lg"/>*/}
 
-                                                            <View style={{alignItems:"center"}}>
-                                                                <TouchableHighlight underlayColor={flag ? "#fff" : "#367d80"} style={{padding:10,
-                                                                    borderWidth:1,borderColor:flag ? "#000" : "#fff",width:100,backgroundColor:flag ? "#fff" : "#f17e3a",
-                                                                    borderRadius:10}} onPress={this.submitBtn }>
-                                                                    <Text
 
-                                                                        style={{fontSize:16,textAlign:"center",color:flag ? "#f0f0f0":"#fff"}}>
-                                                                        申请换房
-                                                                    </Text>
-                                                                </TouchableHighlight>
-                                                            </View>
 
-                                                        </View>):
-                                                        (
-                                                            <View style={{marginTop:10,alignItems:"center"}}>
-                                                                <Text style={{color:"red",fontSize:20}}>暂无可换房间</Text>
-                                                            </View>
-                                                        )}
+                                                        {/*</View>):*/}
+                                                        {/*(*/}
+                                                            {/*<View style={{marginTop:10,alignItems:"center"}}>*/}
+                                                                {/*<Text style={{color:"red",fontSize:20}}>暂无可换房间</Text>*/}
+                                                            {/*</View>*/}
+                                                        {/*)}*/}
 
 
 

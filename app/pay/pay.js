@@ -5,7 +5,7 @@ import {
     Image, StyleSheet, Platform,
     TouchableHighlight,
     DeviceEventEmitter,Modal,ScrollView,TextInput,
-    Alert,
+    Alert,Clipboard,CameraRoll,
     Linking
 } from 'react-native';
 
@@ -16,7 +16,9 @@ import wechatpay from './wechatpay.png'
 import bankcard from './bankcard.png'
 import selectIcon from './selectIcon.png'
 import zfb from './zfb.png'
+import wxTeach from './wechatPayTeach.png'
 import zfbTeach from './zfbTeach.png'
+import zfbTeach2 from './zfbTeach.jpeg'
 import add from './add.png'
 import wallet from './wallet.png'
 
@@ -31,7 +33,7 @@ import close from "../MyHome/Mine/style/close.jpg";
 import right from '../MyHome/Mine/style/right.png'
 let a = Dimensions.get("window").height/Dimensions.get("window").width;
 
-
+import RNFS from 'react-native-fs';
 
 
 
@@ -215,6 +217,7 @@ export default class Clean extends Component {
         super(props);
         this.state = {
             wechatPayType:false,
+            qrcode:"",
             url:"",
             alipayTradeNo:"",
             dataPay:{
@@ -226,7 +229,7 @@ export default class Clean extends Component {
             bankcard:[
             ],
             zfbImg:false,
-            // zfbPayFlag:false,
+            zfbPayFlag:false,
             cardType:null,
             poundage:0,
             availableAmount:0,
@@ -242,6 +245,7 @@ export default class Clean extends Component {
             couponId:'',
             aaa:[],
             bbb:false,
+            clipboardOK:false,
             typeData: {},
 
         };
@@ -451,6 +455,7 @@ export default class Clean extends Component {
                 this.setState({
                     hotelNo:ret.hotelNo,
                     // zfbPayFlag:ret.hotelNo=="H10055"||ret.hotelNo=="H10057"?true:false
+                    zfbPayFlag:ret.hotelNo=="H10040"?true:false
                 },()=>{
                     this.getMyCoupon();
                 })
@@ -829,7 +834,9 @@ export default class Clean extends Component {
                 console.log(response,'支付宝扫码支付');
                 if(response.data.code==0){
                     this.setState({modalVisible:false},()=>{
-                        Toast.info('支付成功',2)
+                        Toast.info('支付成功',2);
+                        DeviceEventEmitter.emit('yiPay','aliPay');
+
                     })
 
                 }else {
@@ -1375,6 +1382,9 @@ export default class Clean extends Component {
                 data.yiPay.payTool='WECHATOFFICIAL';
                 data.yiPay.credit=2;
                 data.yiPay.couponIds=this.state.couponId;
+                if(this.state.zfbPayFlag){
+                    data.yiPay.payTool='OUR_WECHAT';
+                }
 
 
                 //读取
@@ -1400,7 +1410,34 @@ export default class Clean extends Component {
 
                                 let data = response.data.data;
 
+                                if(this.state.zfbPayFlag){
+                                    this.setState({
+                                        modalName:'微信扫码支付',
+                                        modalVisible:true,
+                                        tradeNo:response.data.tradeNo,
+                                        qrcode:response.data.qrcode,
+                                    })
 
+                                }else {
+                                    wechat.isWXAppInstalled()
+                                        .then((isInstalled) => {
+
+                                            if (isInstalled) {
+                                                wechat.shareToSession({
+                                                    title:'闪猪微信代付',
+                                                    description: '闪猪微信代付',
+                                                    thumbImage: ' http://47.95.116.56:8080/file_upload/images/app/logo.png',
+                                                    type: 'news',
+                                                    webpageUrl: data
+                                                })
+                                                    .catch((error) => {
+                                                        Alert.alert(error.message);
+                                                    });
+                                            } else {
+                                                Alert.alert('请安装微信');
+                                            }
+                                        });
+                                }
                                 //读取
                                 storage.load({
                                     key: 'username',
@@ -1428,24 +1465,7 @@ export default class Clean extends Component {
 
 
 
-                                wechat.isWXAppInstalled()
-                                    .then((isInstalled) => {
 
-                                        if (isInstalled) {
-                                            wechat.shareToSession({
-                                                title:'闪猪微信代付',
-                                                description: '闪猪微信代付',
-                                                thumbImage: ' http://47.95.116.56:8080/file_upload/images/app/logo.png',
-                                                type: 'news',
-                                                webpageUrl: data
-                                            })
-                                                .catch((error) => {
-                                                    Alert.alert(error.message);
-                                                });
-                                        } else {
-                                            Alert.alert('请安装微信');
-                                        }
-                                    });
                             }
 
 
@@ -1474,7 +1494,7 @@ export default class Clean extends Component {
             }
             else if(wechatPayType==6){
 
-                //朋友代付
+                //支付宝支付
 
                 if(this.state.Accounts!=null){
                     dataPay.price = this.state.money-this.state.couponMoney;
@@ -1508,12 +1528,12 @@ export default class Clean extends Component {
                             if(response.data.code==1){
                                 Toast.info(response.data.message, 1);
                             }else if(response.data.code==0){
-                                DeviceEventEmitter.emit('yiPay','aliPay');
 
                                 this.setState({
                                     modalName:'',
                                     modalVisible:true,
                                     tradeNo:response.data.tradeNo,
+                                    qrcode:response.data.qrcode,
                                     alipayTradeNo:''
                                 })
 
@@ -1749,6 +1769,25 @@ export default class Clean extends Component {
     };
 
 
+
+    //复制订单号支付
+    setClipboard = (item)=>{
+        Clipboard.setString(this.state.tradeNo)
+        Alert.alert(`复制订单号成功，打开${item?"微信":"支付宝"}`,`复制的订单号一定要填写到${item?"微信":"支付宝"}转账页面备注中！！！！`,
+            [
+                // {text:"取消", onPress:this.cancelSelected},
+                {text:"确认", onPress:()=>{
+
+                        Linking.openURL(item?"weixin://":`alipayqr://platformapi/startapp?saId=10000007&qrcode=${this.state.qrcode}`);
+
+                    }}
+            ],
+            { cancelable: false }
+        );
+
+    }
+
+
     onChange = (key) => {
         console.log(key);
     }
@@ -1850,12 +1889,53 @@ export default class Clean extends Component {
     };
 
 
+    // 保存图片
+    download=(uri)=> {
+        if (!uri) return null;
+        return new Promise((resolve, reject) => {
+            let dirs = Platform.OS === 'ios' ? RNFS.LibraryDirectoryPath : RNFS.ExternalDirectoryPath; //外部文件，共享目录的绝对路径（仅限android）
+            const downloadDest = `${dirs}/${((Math.random() * 10000000) | 0)}.jpg`;
+            const url = uri;
+            const options = {
+                fromUrl: url,
+                toFile: downloadDest,
+                background: true,
+                begin: (res) => {
+                    console.log('begin', res);
+                    console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+                },
+            };
+            try {
+                const ret = RNFS.downloadFile(options);
+                ret.promise.then(res => {
+                    console.log('success', res);
+                    console.log('file://' + downloadDest);
+                    let promise = CameraRoll.saveToCameraRoll(downloadDest);
+                    promise.then(function(result) {
+                        //alert('保存成功');
+                        alert('保存成功')
+
+                    }).catch(function(error) {
+                        alert('保存失败')
+                    });
+                    resolve(res);
+                }).catch(err => {
+                    reject(new Error(err))
+                });
+            } catch (e) {
+                reject(new Error(e))
+            }
+
+        })
+
+    }
+
 
 
 
     render() {
 
-        let {zfbImg,modalName,coupon,poundage,dataPay,wechatPayType,amount,bankcardNo, typeData} = this.state;
+        let {tradeNo,zfbPayFlag,zfbImg,modalName,coupon,poundage,dataPay,wechatPayType,amount,bankcardNo, typeData} = this.state;
         //弹框
         let modalBackgroundStyle = {
             backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : 'red',
@@ -1887,7 +1967,7 @@ export default class Clean extends Component {
                                 <View>
                                     <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
 
-                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>{modalName=='代金券'?'选择代金券':'支付宝支付'}</Text></View>
+                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>{modalName=='代金券'?'选择代金券':modalName=='微信扫码支付'?"微信扫码支付":'支付宝支付'}</Text></View>
 
                                         <TouchableHighlight underlayColor={"#fff"} onPress={()=>{this._setModalVisible(false)} } style={{}}>
                                             <Image style={{height:30,width:30}} source={close}/>
@@ -1941,79 +2021,371 @@ export default class Clean extends Component {
 
                                                     </View>
                                                 </ScrollView>:
+                                                modalName=='微信扫码支付'?
+                                                    <View>
+
+                                                        <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
+
+                                                            <View>
+                                                                <View style={styles.a}>
+                                                                    <Text style={{flex: 1}}>支付说明:</Text>
+                                                                    <View style={[styles.b, {flex: 3}]}>
+                                                                        <Text style={{color: "black",fontWeight:"bold"}}>1.长按保存下方二维码。</Text>
+                                                                        <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>2.点击"复制并支付"按钮，将会自动复制订单号到系统粘贴板，且打开微信。</Text>点击微信"扫一扫"功能，进入微信扫码页面。在"微信扫码"页面中选择右上角相册，选择第一步保存的二维码图片,将会打开微信转账支付页面</Text>
+                                                                        <Text style={{color: "black",fontWeight:"bold"}}>3.将复制好的订单号粘贴到微信转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
+
+                                                                        <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>4.输入转账金额,</Text>金额为
+                                                                            <Text
+                                                                                style={{color: "red", fontWeight: "bold"}}>
+
+                                                                                {(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
+
+                                                                                元(必须为{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
+                                                                                元多转或少转都会导致系统判定支付失败！！！)</Text></Text>
+                                                                    </View>
+                                                                </View>
+                                                                <View style={styles.a}>
+                                                                    <Text style={{flex: 1}}>订单号(该订单号为您支付的唯一凭证):</Text>
+                                                                    <View style={[styles.b, {flex: 3, marginTop: 5}]}>
+                                                                        <Text style={{color: "grey"}}>
+                                                                            {tradeNo}
+                                                                        </Text>
+                                                                    </View>
+                                                                </View>
+
+                                                                <View style={{
+                                                                    flexDirection: "row",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center"
+                                                                }}>
+
+
+                                                                    <View style={{alignItems: "center", padding: 10}}>
+                                                                        <TouchableHighlight underlayColor={"#367d80"}
+                                                                                            style={{
+                                                                                                padding: 10,
+                                                                                                borderWidth: 1,
+                                                                                                borderColor: "#fff",
+                                                                                                width: 150,
+                                                                                                backgroundColor: "#f17e3a",
+                                                                                                borderRadius: 10
+                                                                                            }} onPress={()=>{this.setClipboard(true)}}>
+                                                                            <Text
+
+                                                                                style={{
+                                                                                    fontSize: 16,
+                                                                                    textAlign: "center",
+                                                                                    color: "#fff"
+                                                                                }}>
+                                                                                复制并支付
+                                                                            </Text>
+                                                                        </TouchableHighlight>
+                                                                    </View>
+
+
+                                                                </View>
+
+
+                                                                <TouchableHighlight onLongPress={()=>this.download(this.state.qrcode)} underlayColor="transparent">
+
+                                                                    <Image  style={{
+                                                                        width: "100%",
+                                                                        height: 300,
+                                                                        resizeMode: "contain"
+                                                                    }} source={{uri:this.state.qrcode}}/>
+
+
+                                                                </TouchableHighlight>
+
+                                                                <View>
+                                                                    <View>
+                                                                        <Text style={{
+                                                                            color: "red",
+                                                                            marginTop: 10
+                                                                        }}>有任何问题请联系我们</Text>
+                                                                        <Text onPress={() => {
+                                                                            Linking.openURL('tel:15801327369');
+                                                                        }} style={{
+                                                                            color: "red",
+                                                                            marginTop: 10,
+                                                                            textDecorationLine:"underline"
+                                                                        }}>手机号:15801327369</Text>
+                                                                        <Text style={{color: "red", marginTop: 10}}
+                                                                              selectable={true}>微信:huiz42b</Text>
+
+                                                                    </View>
+                                                                    <Text style={{
+                                                                        color: "#009def",
+                                                                        marginTop: 10,
+                                                                        textAlign: "center",
+                                                                        fontWeight: "bold",
+                                                                        fontSize: 18
+                                                                    }}>支付教程</Text>
+
+                                                                    <View>
+                                                                        <Image style={{
+                                                                            width: "100%",
+                                                                            height: 2000,
+                                                                            resizeMode: "contain"
+                                                                        }} source={wxTeach}/>
+                                                                    </View>
+
+
+                                                                </View>
+
+                                                            </View>
+
+
+
+
+                                                        </ScrollView>
+
+                                                    </View>:
 
                                                 <View>
 
                                                     <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
-                                                        <View style={styles.a}>
-                                                            <Text style={{flex:1}}>支付说明:</Text>
-                                                            <View style={[styles.b,{flex:3}]}>
-                                                                <Text style={{color:"grey"}}>1.点击"打开支付宝"按钮,会直接进入转账页面。</Text>
-                                                                <Text style={{color:"grey"}}>2.输入转账金额,金额为
-                                                                    <Text style={{color:"red",fontWeight:"bold"}}>
-
-                                                                    {(this.state.Accounts==null)?(dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)):this.state.Accounts.toFixed(2)}
-
-                                                                    元(必须为{(this.state.Accounts==null)?(dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)):this.state.Accounts.toFixed(2)}
-                                                                    元多转或少转都会导致支付失败！！！)</Text></Text>
-                                                                <Text style={{color:"grey"}}>3.转账成功后，将支付宝交易号复制到输入框并确认。(支付宝交易号在支付宝页面-我的-账单-找到刚转账的订单点进去订单详情页-复制订单号)</Text>
-                                                            </View>
-                                                        </View>
-                                                        <View style={styles.a}>
-                                                            <Text style={{flex:1}}>支付宝订单号:</Text>
-                                                            <View style={[styles.b,{flex:3,marginTop:5}]}>
-                                                                <TextInput
-                                                                    placeholder={'请输入支付宝交易订单号'}
-                                                                    // value={this.state.username}
-                                                                    style={{minWidth:'100%',padding:10,borderRadius:5,borderColor:"grey",borderWidth:1}}
-                                                                    underlineColorAndroid="transparent"
-                                                                    onChangeText={(alipayTradeNo) => this.setState({alipayTradeNo})}
-                                                                >
-                                                                </TextInput>
-                                                            </View>
-                                                        </View>
-
-                                                        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-                                                            <View style={{alignItems:"center",padding:10}}>
-                                                                <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
-                                                                    borderWidth:1,borderColor:"#fff",width:150,backgroundColor:"#009def",
-                                                                    borderRadius:10}} onPress={this.openZFB }>
-                                                                    <Text
-
-                                                                        style={{fontSize:16,textAlign:"center",color:"#fff"}}>
-                                                                        打开支付宝
-                                                                    </Text>
-                                                                </TouchableHighlight>
-                                                            </View>
-
-                                                            <View style={{alignItems:"center",padding:10}}>
-                                                                <TouchableHighlight underlayColor={"#367d80"} style={{padding:10,
-                                                                    borderWidth:1,borderColor:"#fff",width:150,backgroundColor:"#f17e3a",
-                                                                    borderRadius:10}} onPress={this.submitAlipay }>
-                                                                    <Text
-
-                                                                        style={{fontSize:16,textAlign:"center",color:"#fff"}}>
-                                                                        确定支付
-                                                                    </Text>
-                                                                </TouchableHighlight>
-                                                            </View>
-                                                        </View>
-
-
-
-
-                                                        <Text  style={{color:"#009def",marginTop:10,textAlign:"center",fontWeight:"bold",fontSize:18}}>支付教程</Text>
-
-
-                                                        <View>
-                                                            <Image style={{width:"100%",height:3000,resizeMode:"contain"}} source={zfbTeach}/>
+                                                        {zfbPayFlag ?
                                                             <View>
-                                                                <Text style={{color:"red",marginTop:10}}>有任何问题请联系我们</Text>
-                                                                <Text onPress={()=>{Linking.openURL('tel:15801327369');} } style={{color:"red",marginTop:10}}>手机号:15801327369</Text>
-                                                                <Text style={{color:"red",marginTop:10}} selectable={true}>微信:huiz42b</Text>
-                                                                <Text style={{color:"red",marginTop:10}} selectable={true}>微信:ZHANG411945</Text>
+                                                            <View style={styles.a}>
+                                                                <Text style={{flex: 1}}>支付说明:</Text>
+                                                                <View style={[styles.b, {flex: 3}]}>
+                                                                    <Text
+                                                                        style={{color: "black",fontWeight:"bold"}}>1.点击"复制并支付"按钮复制订单号，会自动将订单号复制到系统粘贴板中，且打开支付宝。</Text>
+                                                                    <Text style={{color: "black",fontWeight:"bold"}}>2.将复制好的订单号粘贴到支付宝转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
+
+                                                                    <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>3.输入转账金额,</Text>金额为
+                                                                        <Text
+                                                                            style={{color: "red", fontWeight: "bold"}}>
+
+                                                                            {(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
+
+                                                                            元(必须为{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
+                                                                            元多转或少转都会导致支付失败！！！)</Text></Text>
+                                                                </View>
                                                             </View>
+                                                            <View style={styles.a}>
+                                                                <Text style={{flex: 1}}>订单号(该订单号为您支付的唯一凭证):</Text>
+                                                                <View style={[styles.b, {flex: 3, marginTop: 5}]}>
+                                                                    <Text style={{color: "grey"}}>
+                                                                        {tradeNo}
+                                                                    </Text>
+                                                                </View>
+                                                            </View>
+
+                                                            <View style={{
+                                                                flexDirection: "row",
+                                                                alignItems: "center",
+                                                                justifyContent: "center"
+                                                            }}>
+
+
+                                                                <View style={{alignItems: "center", padding: 10}}>
+                                                                    <TouchableHighlight underlayColor={"#367d80"}
+                                                                                        style={{
+                                                                                            padding: 10,
+                                                                                            borderWidth: 1,
+                                                                                            borderColor: "#fff",
+                                                                                            width: 150,
+                                                                                            backgroundColor: "#f17e3a",
+                                                                                            borderRadius: 10
+                                                                                        }} onPress={()=>{this.setClipboard(false)}}>
+                                                                        <Text
+
+                                                                            style={{
+                                                                                fontSize: 16,
+                                                                                textAlign: "center",
+                                                                                color: "#fff"
+                                                                            }}>
+                                                                            复制并支付
+                                                                        </Text>
+                                                                    </TouchableHighlight>
+                                                                </View>
+
+                                                                {/*<View style={{alignItems: "center", padding: 10}}>*/}
+                                                                    {/*<TouchableHighlight underlayColor={"transparent"}*/}
+                                                                                        {/*style={{*/}
+                                                                                            {/*padding: 10,*/}
+                                                                                            {/*borderWidth: 1,*/}
+                                                                                            {/*borderColor: "#fff",*/}
+                                                                                            {/*width: 120,*/}
+                                                                                            {/*backgroundColor: "#009def",*/}
+                                                                                            {/*borderRadius: 10*/}
+                                                                                        {/*}} onPress={this.openZFB}>*/}
+                                                                        {/*<Text*/}
+
+                                                                            {/*style={{*/}
+                                                                                {/*fontSize: 16,*/}
+                                                                                {/*textAlign: "center",*/}
+                                                                                {/*color: "#fff"*/}
+                                                                            {/*}}>*/}
+                                                                            {/*打开支付宝*/}
+                                                                        {/*</Text>*/}
+                                                                    {/*</TouchableHighlight>*/}
+                                                                {/*</View>*/}
+
+                                                            </View>
+
+
+                                                            <View>
+                                                                <View>
+                                                                    <Text style={{
+                                                                        color: "red",
+                                                                        marginTop: 10
+                                                                    }}>有任何问题请联系我们</Text>
+                                                                    <Text onPress={() => {
+                                                                        Linking.openURL('tel:15801327369');
+                                                                    }} style={{
+                                                                        color: "red",
+                                                                        marginTop: 10,
+                                                                        textDecorationLine:"underline"
+                                                                    }}>手机号:15801327369</Text>
+                                                                    <Text style={{color: "red", marginTop: 10}}
+                                                                          selectable={true}>微信:huiz42b</Text>
+
+                                                                </View>
+                                                                <Text style={{
+                                                                    color: "#009def",
+                                                                    marginTop: 10,
+                                                                    textAlign: "center",
+                                                                    fontWeight: "bold",
+                                                                    fontSize: 18
+                                                                }}>支付教程</Text>
+
+                                                                <Image style={{
+                                                                    width: "100%",
+                                                                    height: 800,
+                                                                    resizeMode: "contain"
+                                                                }} source={zfbTeach2}/>
+
+                                                            </View>
+
+                                                        </View> :
+                                                            <View>
+                                                            <View style={styles.a}>
+                                                                <Text style={{flex: 1}}>支付说明:</Text>
+                                                                <View style={[styles.b, {flex: 3}]}>
+                                                                    <Text
+                                                                        style={{color: "grey"}}>1.点击"打开支付宝"按钮,会直接进入转账页面。</Text>
+                                                                    <Text style={{color: "grey"}}>2.输入转账金额,金额为
+                                                                        <Text
+                                                                            style={{color: "red", fontWeight: "bold"}}>
+
+                                                                            {(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
+
+                                                                            元(必须为{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
+                                                                            元多转或少转都会导致支付失败！！！)</Text></Text>
+                                                                    <Text
+                                                                        style={{color: "grey"}}>3.转账成功后，将支付宝交易号复制到输入框并确认。(支付宝交易号在支付宝页面-我的-账单-找到刚转账的订单点进去订单详情页-复制订单号)</Text>
+                                                                </View>
+                                                            </View>
+                                                            <View style={styles.a}>
+                                                                <Text style={{flex: 1}}>支付宝订单号:</Text>
+                                                                <View style={[styles.b, {flex: 3, marginTop: 5}]}>
+                                                                    <TextInput
+                                                                        placeholder={'请输入支付宝交易订单号'}
+                                                                        // value={this.state.username}
+                                                                        style={{
+                                                                            minWidth: '100%',
+                                                                            padding: 10,
+                                                                            borderRadius: 5,
+                                                                            borderColor: "grey",
+                                                                            borderWidth: 1
+                                                                        }}
+                                                                        underlineColorAndroid="transparent"
+                                                                        onChangeText={(alipayTradeNo) => this.setState({alipayTradeNo})}
+                                                                    >
+                                                                    </TextInput>
+                                                                </View>
+                                                            </View>
+
+                                                            <View style={{
+                                                                flexDirection: "row",
+                                                                alignItems: "center",
+                                                                justifyContent: "space-between"
+                                                            }}>
+                                                                <View style={{alignItems: "center", padding: 10}}>
+                                                                    <TouchableHighlight underlayColor={"transparent"}
+                                                                                        style={{
+                                                                                            padding: 10,
+                                                                                            borderWidth: 1,
+                                                                                            borderColor: "#fff",
+                                                                                            width: 120,
+                                                                                            backgroundColor: "#009def",
+                                                                                            borderRadius: 10
+                                                                                        }} onPress={this.openZFB}>
+                                                                        <Text
+
+                                                                            style={{
+                                                                                fontSize: 16,
+                                                                                textAlign: "center",
+                                                                                color: "#fff"
+                                                                            }}>
+                                                                            打开支付宝
+                                                                        </Text>
+                                                                    </TouchableHighlight>
+                                                                </View>
+
+                                                                <View style={{alignItems: "center", padding: 10}}>
+                                                                    <TouchableHighlight underlayColor={"#367d80"}
+                                                                                        style={{
+                                                                                            padding: 10,
+                                                                                            borderWidth: 1,
+                                                                                            borderColor: "#fff",
+                                                                                            width: 100,
+                                                                                            backgroundColor: "#f17e3a",
+                                                                                            borderRadius: 10
+                                                                                        }} onPress={this.submitAlipay}>
+                                                                        <Text
+
+                                                                            style={{
+                                                                                fontSize: 16,
+                                                                                textAlign: "center",
+                                                                                color: "#fff"
+                                                                            }}>
+                                                                            确定支付
+                                                                        </Text>
+                                                                    </TouchableHighlight>
+                                                                </View>
+                                                            </View>
+
+
+                                                            <View>
+                                                                <View>
+                                                                    <Text style={{
+                                                                        color: "red",
+                                                                        marginTop: 10
+                                                                    }}>有任何问题请联系我们</Text>
+                                                                    <Text onPress={() => {
+                                                                        Linking.openURL('tel:15801327369');
+                                                                    }} style={{
+                                                                        color: "red",
+                                                                        marginTop: 10
+                                                                    }}>手机号:15801327369</Text>
+                                                                    <Text style={{color: "red", marginTop: 10}}
+                                                                          selectable={true}>微信:huiz42b</Text>
+                                                                </View>
+                                                                <Text style={{
+                                                                    color: "#009def",
+                                                                    marginTop: 10,
+                                                                    textAlign: "center",
+                                                                    fontWeight: "bold",
+                                                                    fontSize: 18
+                                                                }}>支付教程</Text>
+
+                                                                <Image style={{
+                                                                    width: "100%",
+                                                                    height: 3000,
+                                                                    resizeMode: "contain"
+                                                                }} source={zfbTeach}/>
+
+                                                            </View>
+
+
                                                         </View>
+
+
+                                                        }
 
                                                     </ScrollView>
 

@@ -451,7 +451,7 @@ class A extends Component {
     }
 
     componentDidMount() {
-        
+
         console.log('componentDidMount');
 
         this.tab =  DeviceEventEmitter.addListener('tab', (item)=>{
@@ -546,6 +546,7 @@ class A extends Component {
                             let data = {}
                             data.data =  response.data.data;
                             data.count = response.data.count;
+                            data.keeping = response.data.keeping;
                             navigate('Repair',{ user:data })
 
                         })
@@ -572,6 +573,7 @@ class A extends Component {
                             let data = {}
                             data.data =  response.data.data;
                             data.count = response.data.count;
+                            data.keeping = response.data.keeping;
                             navigate('Clean',{ user:data })
 
                         })
@@ -846,7 +848,7 @@ class A extends Component {
             }else {
                 data = val
             }
-            
+
             console.log(this.state.phone,'this.state.phone');
 
             console.log(data,'安居头');

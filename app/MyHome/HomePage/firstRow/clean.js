@@ -59,6 +59,7 @@ export default class Clean extends Component {
             text:"",
 
             evaluationText:"",
+            keeping:"",
             code:3,
             starCode:0,
             flag:false,
@@ -105,6 +106,7 @@ export default class Clean extends Component {
             date:new Date(),
             params:param,
             count:datas.count,
+            keeping:datas.keeping,
 
         });
 
@@ -194,7 +196,7 @@ export default class Clean extends Component {
 
         let {date,text,flag,noOneStr} = this.state;
 
-        
+
         if(date==""){
             Toast.info("请选择保洁时间", 1);
             return
@@ -392,7 +394,7 @@ export default class Clean extends Component {
     render() {
         //获取个人保洁历史
 
-        
+
 
         //选择保洁日期
         const nowTimeStamp = Date.now();
@@ -418,7 +420,7 @@ export default class Clean extends Component {
 
         return (
 
-            <View style={{ alignItems: 'center',backgroundColor:"#fff",height: Dimensions.get('window').height,}}>
+            <View style={{ alignItems: 'center',backgroundColor:"#fff",height: Dimensions.get('window').height,padding:10}}>
 
 
                     <ScrollView showsVerticalScrollIndicator={false}>
@@ -433,7 +435,7 @@ export default class Clean extends Component {
                                     <View>
                                         <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}><Text>保洁政策：</Text></View>
                                         <WhiteSpace size="lg"/>
-                                        <Text style={{color:"grey"}}>一个月免费保洁两次，超过按次收费</Text>
+                                        <Text style={{color:"grey"}}>{this.state.keeping}</Text>
 
                                         <View style={{marginTop:10,marginBottom:10,height:2,backgroundColor:"#f0f0f0"}} />
                                         <View style={{borderLeftWidth:2,borderLeftColor:"#60a9f8",paddingLeft:5}}>

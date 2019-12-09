@@ -23,17 +23,44 @@ import close from "./style/close.jpg";
 import Dimensions from 'Dimensions';
 import moment from 'moment'
 
+// const setDate = (date) => {
+//     let newDate = new Date();
+//     let num = moment(newDate).valueOf() - moment(date).valueOf();
+//
+//     if(moment(num).dayOfYear() > 10) {
+//         return moment(date).format('YYYY-MM-DD');
+//     } else {
+//         return `${moment(num).dayOfYear()}天前`
+//     }
+// }
+
 const setDate = (date) => {
+
+    let a = 1000*60;//分钟
+    let b = 1000*60*60;//小时
+
     let newDate = new Date();
     let num = moment(newDate).valueOf() - moment(date).valueOf();
 
-    if(moment(num).dayOfYear() > 10) {
-        return moment(date).format('YYYY-MM-DD');
-    } else {
-        return `${moment(num).dayOfYear()}天前`
-    }
-}
+    if(num / a < 60){
 
+        return(`${Math.round(num/a)}分钟前`)
+
+    }else if(num / b < 24){
+
+        return(`${Math.round(num/b)}小时前`)
+
+    }else if(moment(num).dayOfYear() < 10){
+
+        return(`${moment(num).dayOfYear()}天前`)
+
+    }else {
+
+        return moment(date).format('YYYY-MM-DD');
+    }
+
+
+};
 
 
 
@@ -490,7 +517,7 @@ export default class myBill extends Component {
                                             <View  style={{alignItems:"center"}}>
                                                 <Text style={{fontSize:12,color:"grey"}}>{setDate(item.CREATE_TIME)}</Text>
                                                 <WhiteSpace size="xs"/>
-                                                <Text style={{fontSize:12,color:"grey"}}>{moment(item.CREATE_TIME).format("hh:mm")}</Text>
+                                                <Text style={{fontSize:12,color:"grey"}}>{moment(item.CREATE_TIME).format("HH:mm")}</Text>
                                             </View>
                                         </View>
 

@@ -14,6 +14,7 @@ import rent from "../style/5.png";
 import electric from "../style/6.png";
 import water from "../style/7.png";
 import fee from "../style/fee.png";
+import yijiao from "../style/yijiao.png";
 import Dimensions from 'Dimensions';
 import close from "../../Mine/style/close.jpg";
 import {ifIphoneX} from "react-native-iphone-x-helper/index";
@@ -143,7 +144,8 @@ export default class Rent extends Component {
                         }
                     });
                     let data = param;
-                    if(this.props.type !== 3 || this.bet || this.dep) {
+                    // if(this.props.type !== 3 || this.bet || this.dep) {
+                    if( this.bet || this.dep) {
                         data = param.map((item)=>{
                             if(this.props.type == 1 || this.props.type == 2) {
                                 if(item.isState == 0 && num < 1) {
@@ -170,7 +172,7 @@ export default class Rent extends Component {
                                 } else {
 
                                     if(item.isState == 0 && item.feeCode == "100000" && num < this.payMonth) {
-                                        
+
                                         item.disabled = true;
                                         item.selectRent = true;
                                         allRent += (item.rentPrice+(item.lateFee || 0));
@@ -272,51 +274,86 @@ export default class Rent extends Component {
 
             }
         })
-        
+
 
 
 
         if(aa){
-            if(type!==1&&type!==2&&type!==3&&this.onLine){
-                Toast.info('请去"全部"缴纳账单',1);
-                return
-            }else{
 
+            let dataPay = {};
+            let data = {
+                ids: []
+            };
 
-                let dataPay = {};
-                let data = {
-                    ids: []
-                };
-
-                let {dataSource, allRent} = this.state;
-                dataSource.map(_item => {
-                    if(_item.selectRent) {
-                        data.ids.push(_item.id);
-                    }
-                });
-
-                data.ids = data.ids.join(',');
-
-                dataPay.moneyData = moneyData;
-                dataPay.fenqiType = fenqiType;
-                dataPay.dataPay = data;
-                dataPay.url = "/tenant/alipaySignature";
-                dataPay.price = allRent;
-                dataPay.orderType = 0;
-                dataPay.introduce = this.props.type==1?'电费':this.props.type==2?'水费':this.props.type==3?'全部':'房租';
-                dataPay.navigator = this.props.type==1?'Electricity':this.props.type==2?'Water':this.props.type==3?'AllBills':'Rent';
-
-                dataPay.yiPay={
-                    price:allRent,
-                    orderType:0,
-                    ids:data.ids,
+            let {dataSource, allRent} = this.state;
+            dataSource.map(_item => {
+                if(_item.selectRent) {
+                    data.ids.push(_item.id);
                 }
+            });
 
-                console.log(dataPay);
+            data.ids = data.ids.join(',');
 
-                const { navigate } = this.props.navigation;
-                navigate('Pay',{ user:dataPay });
+            dataPay.moneyData = moneyData;
+            dataPay.fenqiType = fenqiType;
+            dataPay.dataPay = data;
+            dataPay.url = "/tenant/alipaySignature";
+            dataPay.price = allRent;
+            dataPay.orderType = 0;
+            dataPay.introduce = this.props.type==1?'电费':this.props.type==2?'水费':this.props.type==3?'全部':'房租';
+            dataPay.navigator = this.props.type==1?'Electricity':this.props.type==2?'Water':this.props.type==3?'AllBills':'Rent';
+
+            dataPay.yiPay={
+                price:allRent,
+                orderType:0,
+                ids:data.ids,
             }
+
+            console.log(dataPay);
+
+            const { navigate } = this.props.navigation;
+            navigate('Pay',{ user:dataPay });
+
+            // if(type!==1&&type!==2&&type!==3&&this.onLine){
+            //     Toast.info('请去"全部"缴纳账单',1);
+            //     return
+            // }else{
+            //
+            //
+            //     let dataPay = {};
+            //     let data = {
+            //         ids: []
+            //     };
+            //
+            //     let {dataSource, allRent} = this.state;
+            //     dataSource.map(_item => {
+            //         if(_item.selectRent) {
+            //             data.ids.push(_item.id);
+            //         }
+            //     });
+            //
+            //     data.ids = data.ids.join(',');
+            //
+            //     dataPay.moneyData = moneyData;
+            //     dataPay.fenqiType = fenqiType;
+            //     dataPay.dataPay = data;
+            //     dataPay.url = "/tenant/alipaySignature";
+            //     dataPay.price = allRent;
+            //     dataPay.orderType = 0;
+            //     dataPay.introduce = this.props.type==1?'电费':this.props.type==2?'水费':this.props.type==3?'全部':'房租';
+            //     dataPay.navigator = this.props.type==1?'Electricity':this.props.type==2?'Water':this.props.type==3?'AllBills':'Rent';
+            //
+            //     dataPay.yiPay={
+            //         price:allRent,
+            //         orderType:0,
+            //         ids:data.ids,
+            //     }
+            //
+            //     console.log(dataPay);
+            //
+            //     const { navigate } = this.props.navigation;
+            //     navigate('Pay',{ user:dataPay });
+            // }
         }else {
             Toast.info('请选择账单',1);
         }
@@ -341,7 +378,8 @@ export default class Rent extends Component {
 
 
 
-            if(this.props.type == 3 && !(this.bet || this.dep) && this.flag && item.feeCode == "100000") {
+            // if(this.props.type == 3 && !(this.bet || this.dep) && this.flag && item.feeCode == "100000") {
+            if(!(this.bet || this.dep) && this.flag && item.feeCode == "100000") {
                 this.flag = false;
                 let num = 0;
                 let data = dataSource.map((_item)=>{
@@ -510,16 +548,21 @@ export default class Rent extends Component {
 
         let {type} = this.props;
 
-        if(type!==1&&type!==2&&type!==3&&this.onLine){
-            Toast.info('请去"全部"缴纳账单',1);
-            return
-        }else{
+        // if(type!==1&&type!==2&&type!==3&&this.onLine){
+        //     Toast.info('请去"全部"缴纳账单',1);
+        //     return
+        // }else{
+        //
+        //     this.setState({
+        //         modal:'分期',
+        //         modalVisible: true
+        //     })
+        // }
 
-            this.setState({
-                modal:'分期',
-                modalVisible: true
-            })
-        }
+        this.setState({
+            modal:'分期',
+            modalVisible: true
+        })
 
 
     };
@@ -814,7 +857,7 @@ export default class Rent extends Component {
                                         {
                                             ((!isFenqi || willpaid==1 )|| this.isWhiteStripes==2) ?<Text/> :
                                                 (
-                                                    <TouchableHighlight  underlayColor="#fff" onPress={this.installment}  style={{display:type!==1&&type!==2&&payMonth>1?'flex':'none',alignItems:"center",padding:10,backgroundColor:type!==1&&type!==2&&type!==3&&this.onLine?'#666':"#f1803a",flex:1}}>
+                                                    <TouchableHighlight  underlayColor="#fff" onPress={this.installment}  style={{display:type!==1&&type!==2&&payMonth>1?'flex':'none',alignItems:"center",padding:10,backgroundColor:"#f1803a",flex:1}}>
                                                         <Text style={{color:"#fff"}}>房租月付</Text>
                                                     </TouchableHighlight>
 
@@ -822,7 +865,7 @@ export default class Rent extends Component {
                                         }
 
 
-                                        <TouchableHighlight onPress={this.onPay} underlayColor="#fff"  style={{marginLeft:2,padding:10,backgroundColor:type!==1&&type!==2&&type!==3&&this.onLine?'#666':"#f1803a",flex:1,alignItems:"center"}}>
+                                        <TouchableHighlight onPress={this.onPay} underlayColor="#fff"  style={{marginLeft:2,padding:10,backgroundColor:"#f1803a",flex:1,alignItems:"center"}}>
                                             <Text style={{color:"#fff"}}>确认账单</Text>
                                         </TouchableHighlight>
                                     </View>
@@ -853,7 +896,7 @@ export default class Rent extends Component {
 
                                                     <View style={{flexDirection:"row",flex:3,alignItems:"center"}}>
                                                         <View style={{marginRight:8}}>
-                                                            <Image style={{height:30,width:30}} source={item.feeCode == '200002' ? electric : item.feeCode == '200001' ? water : item.feeCode == '100000' ? rent : fee }/>
+                                                            <Image style={{height:30,width:30}} source={ item.isState==1?yijiao:(item.feeCode == '200002' ? electric : item.feeCode == '200001' ? water : item.feeCode == '100000' ? rent :fee) }/>
                                                         </View>
                                                         <View>
                                                             <Text style={{color:item.isState == 0?"#000":"grey",fontSize:18}}>

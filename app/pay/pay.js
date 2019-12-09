@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import {
     Text,
     View,
-    Image, StyleSheet, Platform,
+    Image, StyleSheet,
     TouchableHighlight,
     DeviceEventEmitter,Modal,ScrollView,TextInput,
-    Alert,Clipboard,CameraRoll,
-    Linking
+    Alert,Clipboard,CameraRoll,Platform,
+    Linking,PermissionsAndroid
 } from 'react-native';
 
 import {WhiteSpace,Toast,Accordion, List} from 'antd-mobile'
@@ -1889,6 +1889,35 @@ export default class Clean extends Component {
     };
 
 
+     permissions = async(uri)=>{
+
+        const check =  await PermissionsAndroid.check(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE)
+         console.log(check,"checkcheck")
+
+         if(check){
+             this.download(uri)
+         }else {
+             const granted = await PermissionsAndroid.request(
+                 PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                 {
+                     title: '申请读写文件权限',
+                     message:
+                         'app申请读写文件权限，请开通此权限，否则图片不能保存成功',
+                     // buttonNeutral: '等会再问我',
+                     buttonNegative: '拒绝',
+                     buttonPositive: '允许',
+                 },
+             )
+             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                 console.log("You can use the camera")
+             } else {
+                 console.log("Camera permission denied")
+             }
+         }
+    }
+
+
     // 保存图片
     download=(uri)=> {
         if (!uri) return null;
@@ -1916,6 +1945,7 @@ export default class Clean extends Component {
                         alert('保存成功')
 
                     }).catch(function(error) {
+                        console.log(error,'errorerror')
                         alert('保存失败')
                     });
                     resolve(res);
@@ -2032,7 +2062,7 @@ export default class Clean extends Component {
                                                                     <View style={[styles.b, {flex: 3}]}>
                                                                         <Text style={{color: "black",fontWeight:"bold"}}>1.长按保存下方二维码。</Text>
                                                                         <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>2.点击"复制并支付"按钮，将会自动复制订单号到系统粘贴板，且打开微信。</Text>点击微信"扫一扫"功能，进入微信扫码页面。在"微信扫码"页面中选择右上角相册，选择第一步保存的二维码图片,将会打开微信转账支付页面</Text>
-                                                                        <Text style={{color: "black",fontWeight:"bold"}}>3.将复制好的订单号粘贴到微信转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
+                                                                        <Text style={{color: "red",fontWeight:"bold"}}>3.将复制好的订单号粘贴到微信转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
 
                                                                         <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>4.输入转账金额,</Text>金额为
                                                                             <Text
@@ -2086,7 +2116,17 @@ export default class Clean extends Component {
                                                                 </View>
 
 
-                                                                <TouchableHighlight onLongPress={()=>this.download(this.state.qrcode)} underlayColor="transparent">
+                                                                <TouchableHighlight onLongPress={()=>{
+
+
+                                                                    if(Platform.OS== 'android'){
+                                                                        this.permissions(this.state.qrcode)
+                                                                }else {
+                                                                        this.download(this.state.qrcode)
+                                                                    }
+
+
+                                                                }} underlayColor="transparent">
 
                                                                     <Image  style={{
                                                                         width: "100%",
@@ -2152,7 +2192,7 @@ export default class Clean extends Component {
                                                                 <View style={[styles.b, {flex: 3}]}>
                                                                     <Text
                                                                         style={{color: "black",fontWeight:"bold"}}>1.点击"复制并支付"按钮复制订单号，会自动将订单号复制到系统粘贴板中，且打开支付宝。</Text>
-                                                                    <Text style={{color: "black",fontWeight:"bold"}}>2.将复制好的订单号粘贴到支付宝转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
+                                                                    <Text style={{color: "red",fontWeight:"bold"}}>2.将复制好的订单号粘贴到支付宝转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
 
                                                                     <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>3.输入转账金额,</Text>金额为
                                                                         <Text

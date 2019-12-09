@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {
     View, Text, TouchableHighlight, Image, ScrollView, StyleSheet, Platform, CameraRoll, Alert,
-    DeviceEventEmitter
+    DeviceEventEmitter, PermissionsAndroid
 } from 'react-native';
 
 import Dimensions from 'Dimensions';
@@ -110,6 +110,35 @@ export default class Mine extends Component {
     }
 
 
+    permissions = async(uri)=>{
+
+        const check =  await PermissionsAndroid.check(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE)
+        console.log(check,"checkcheck")
+
+        if(check){
+            this.download(uri)
+        }else {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                {
+                    title: '申请读写文件权限',
+                    message:
+                        'app申请读写文件权限，请开通此权限，否则图片不能保存成功',
+                    // buttonNeutral: '等会再问我',
+                    buttonNegative: '拒绝',
+                    buttonPositive: '允许',
+                },
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the camera")
+            } else {
+                console.log("Camera permission denied")
+            }
+        }
+    }
+
+
     // 保存图片
     download=(uri)=> {
         if (!uri) return null;
@@ -154,7 +183,13 @@ export default class Mine extends Component {
 
     comfirmSelected=(item)=>{
 
-        this.download(item)
+
+        if(Platform.OS== 'android'){
+            this.permissions(item)
+        }else {
+
+            this.download(item)
+        }
     };
 
     cancelSelected=()=>{
@@ -163,7 +198,7 @@ export default class Mine extends Component {
 
 
     saveImg=(item)=>{
-        
+
         console.log(item);
 
         Alert.alert('保存','确认保存吗？',
@@ -248,7 +283,7 @@ export default class Mine extends Component {
                     }}>
 
                     {
-                        imglist.length>0?
+                        imglist&&imglist.length>0?
 
                             <View>
 

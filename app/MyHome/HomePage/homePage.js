@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     Modal, DeviceEventEmitter, StyleSheet, Text, View, Image, ImageBackground, ListView, TouchableHighlight,
-    Platform, Linking, ScrollView, Alert
+    Platform, Linking, ScrollView, Alert, PermissionsAndroid
 } from 'react-native';
 import Dimensions from 'Dimensions';
 import { Carousel, Toast,} from 'antd-mobile';
@@ -111,6 +111,8 @@ class A extends Component {
             Linking.openURL(url)
         }
     }
+
+
     componentWillMount(){
 
         // if(Platform.OS== 'android'){
@@ -123,7 +125,15 @@ class A extends Component {
         //     );
         // }
 
-
+        // if(Platform.OS== 'ios'){
+        //     Alert.alert('下载最新app','为了更好的使用体验，ios用户请更新最新版本app！',
+        //         [
+        //             // {text:"取消", onPress:this.cancelSelecte},
+        //             {text:"确认", onPress:this.walletSelected}
+        //         ],
+        //         { cancelable: false }
+        //     );
+        // }
 
 
         CodePush.sync();
@@ -286,8 +296,9 @@ class A extends Component {
         })
             .then((response) =>{
                 console.log(response,'合同');
+                console.log(response.data,'response.data.data');
 
-                if (response.data.data) {
+                if (response.data) {
 
                     //读取
                     storage.load({
@@ -295,10 +306,10 @@ class A extends Component {
                         // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
                         autoSync: false
                     }).then(ret => {
-                        ret.checkinNo=response.data.data.checkinNo;
+                        ret.checkinNo=response.data.checkinNo;
 
                         this.setState({
-                            checkinNo:response.data.data.checkinNo
+                            checkinNo:response.data.checkinNo
                         })
 
                         return ret
@@ -314,24 +325,22 @@ class A extends Component {
                         }
                     });
 
+                    console.log(response.data.status,'response.data.status')
+                    console.log(response.data.status!=2 || response.data.status!=-1,'response.data.status')
 
-                    if(response.data.data.status!=2){
+
+                    if(response.data.status==0||response.data.status==1){
                         this.setState({
                             modalVisible: true,
                             modal: '合同',
-                            checkinNo: response.data.data.checkinNo,
+                            checkinNo: response.data.checkinNo,
                             // constractImg:response.data.data.imgList
 
                         })
 
-                        // Alert.alert('确定签约','请先签署电子合同',
-                        //     [
-                        //         // {text:"取消", onPress:this.cancelSelected},
-                        //         {text:"确认", onPress:()=>{this.uploadImgSelected()}}
-                        //     ],
-                        //     { cancelable: false }
-                        // );
                     }
+
+
 
                 }
 
@@ -585,7 +594,7 @@ class A extends Component {
 
                 break;
 
-            case "房租":
+            case "未缴账单":
                 console.log('fangzu');
 
                 if(checkinNo==''){
@@ -596,7 +605,7 @@ class A extends Component {
 
                 break;
 
-            case "电费":
+            case "电费账单":
 
                 if(checkinNo==''){
                     Toast.info("未签约用户暂不支持此功能",1)
@@ -607,7 +616,7 @@ class A extends Component {
 
                 break;
 
-            case "水费":
+            case "水费账单":
                 if(checkinNo==''){
                     Toast.info("未签约用户暂不支持此功能",1)
                 }else{
@@ -616,7 +625,7 @@ class A extends Component {
 
                 break;
 
-            case "全部":
+            case "全部账单":
                 if(checkinNo==''){
                     Toast.info("未签约用户暂不支持此功能",1)
                 }else{
@@ -625,7 +634,7 @@ class A extends Component {
 
 
                 break;
-            case "退租":
+            case "退租管理":
 
 
                 if(checkinNo==''){
@@ -656,7 +665,7 @@ class A extends Component {
 
 
                 break;
-            case "续租":
+            case "续租管理":
 
                 if(checkinNo==''){
                     Toast.info("未签约用户暂不支持此功能",1)
@@ -686,7 +695,7 @@ class A extends Component {
 
 
                 break;
-            case "转租":
+            case "转租管理":
                 if(checkinNo==''){
                     Toast.info("未签约用户暂不支持此功能",1)
                 }else {
@@ -714,7 +723,7 @@ class A extends Component {
 
 
                 break;
-            case "换房":
+            case "换房管理":
                 if(checkinNo==''){
                     Toast.info("未签约用户暂不支持此功能",1)
                 }else {
@@ -792,12 +801,12 @@ class A extends Component {
         })
             .then((response) =>{
                 console.log(response,'合同');
-                if (response.data.data) {
-                    if(response.data.data.status!=2){
+                if (response.data) {
+                    if(response.data.status==0||response.data.status==1){
                         this.setState({
                             modalVisible: true,
                             modal: '合同',
-                            checkinNo: response.data.data.checkinNo,
+                            checkinNo: response.data.checkinNo,
                             // constractImg:response.data.data.imgList
                         })
                     }else {
@@ -881,14 +890,14 @@ class A extends Component {
             { icon: icon2,  text: "预约维修" },
             { icon: icon3,  text: "预约保洁" },
             { icon: icon4,  text: "快递查收" },
-            { icon: icon5,  text: "房租" },
-            { icon: icon6,  text: "电费" },
-            { icon: icon7,  text: "水费" },
-            { icon: icon8,  text: "全部" },
-            { icon: icon9,  text: "退租" },
-            { icon: icon10, text: "续租" },
-            { icon: icon11, text: "转租" },
-            { icon: icon12, text: "换房" },
+            { icon: icon5,  text: "未缴账单" },
+            { icon: icon6,  text: "电费账单" },
+            { icon: icon7,  text: "水费账单" },
+            { icon: icon8,  text: "全部账单" },
+            { icon: icon9,  text: "退租管理" },
+            { icon: icon10, text: "续租管理" },
+            { icon: icon11, text: "转租管理" },
+            { icon: icon12, text: "换房管理" },
             { icon: icon13, text: "呼叫管家" },
             { icon: icon14, text: "投诉建议" },
             { icon: icon15, text: "问卷信息" },

@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {
     View, CameraRoll, Text, TouchableHighlight, Image, ScrollView, StyleSheet, Platform,
-    DeviceEventEmitter
+    DeviceEventEmitter, PermissionsAndroid
 } from 'react-native';
 import none from './style/none.jpeg'
 import axios from "axios";
@@ -200,6 +200,34 @@ export default class Mine extends React.Component {
 
     }
 
+    permissions = async(uri)=>{
+
+        const check =  await PermissionsAndroid.check(
+            PermissionsAndroid.PERMISSIONS.CAMERA)
+        console.log(check,"checkcheck")
+
+        if(check){
+            this.uploadPic(uri)
+        }else {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: '申请拍照和照片权限',
+                    message:
+                        'app申请拍照和照片权限，请开通此权限，否则不能上传图片',
+                    // buttonNeutral: '等会再问我',
+                    buttonNegative: '拒绝',
+                    buttonPositive: '允许',
+                },
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the camera")
+            } else {
+                console.log("Camera permission denied")
+            }
+        }
+    }
+
     //上传图片
     uploadPic = (item) => {
 
@@ -289,13 +317,15 @@ export default class Mine extends React.Component {
 
             }else{
 
+                Toast.loading('loading');
+
                 axios.post('https://47.95.116.56:8443/file_upload/addCardFiles', {
                     idCard1:uri1,
                     idCard2:uri2,
                 })
                     .then( (response)=> {
                         console.log(response);
-
+                        Toast.hide()
                         if(response.data.code==0){
 
                             Toast.info('验证通过,您已上传成功',2)
@@ -331,7 +361,7 @@ export default class Mine extends React.Component {
                                     console.log(error);
 
                                 });
-                        }else if(response.data.code==1){
+                        }else{
                             Toast.info(response.data.msg==''?response.data:response.data.msg,1);
                         }
 
@@ -377,7 +407,14 @@ export default class Mine extends React.Component {
                             </View>
 
                             <View style={{alignItems:"center"}}>
-                                <TouchableHighlight onPress={()=>{this.uploadPic(1)}} underlayColor="#f0f0f0" style={{marginTop:10,marginBottom:20,width:"50%",padding:5,borderRadius:5,borderWidth:1,borderColor:"#666",alignItems:"center"}}>
+                                <TouchableHighlight onPress={()=>{
+                                    // this.uploadPic(1)
+                                    if(Platform.OS== 'android'){
+                                    this.permissions(1)
+                                }else {
+                                        this.uploadPic(1)
+                                }
+                                }} underlayColor="#f0f0f0" style={{marginTop:10,marginBottom:20,width:"50%",padding:5,borderRadius:5,borderWidth:1,borderColor:"#666",alignItems:"center"}}>
                                     <Text style={{}}>请上传身份证正面照</Text>
                                 </TouchableHighlight>
                             </View>
@@ -393,7 +430,14 @@ export default class Mine extends React.Component {
 
                             <View style={{alignItems:"center"}}>
 
-                                <TouchableHighlight onPress={()=>{this.uploadPic(2)}} underlayColor="#f0f0f0"  style={{marginTop:10,marginBottom:20,width:"50%",padding:5,borderRadius:5,borderWidth:1,borderColor:"#666",alignItems:"center"}}>
+                                <TouchableHighlight onPress={()=>{
+                                    // this.uploadPic(2)
+                                    if(Platform.OS== 'android'){
+                                    this.permissions(2)
+                                }else {
+                                    this.uploadPic(2)
+                                }
+                                }} underlayColor="#f0f0f0"  style={{marginTop:10,marginBottom:20,width:"50%",padding:5,borderRadius:5,borderWidth:1,borderColor:"#666",alignItems:"center"}}>
                                     <Text style={{}}>请上传身份证反面照</Text>
                                 </TouchableHighlight>
                             </View>
@@ -446,7 +490,7 @@ const styles = StyleSheet.create({
     imgView:{
         marginRight:10
     }
-    
+
 
 });
 

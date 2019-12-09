@@ -698,7 +698,7 @@ const SimpleApp = createStackNavigator({
     Rent:{
         screen: Rent,
         navigationOptions: {
-            headerTitle:'在线缴租',
+            headerTitle:'未缴账单',
             headerBackTitle:null,
             headerStyle: {
                 backgroundColor: '#f17e3a'

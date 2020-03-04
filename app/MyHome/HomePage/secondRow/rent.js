@@ -884,88 +884,93 @@ export default class Rent extends Component {
                                     onRefresh={this.onRefresh} //下拉刷新
                                     refreshing={refreshing} //下拉刷新时候的正在加载的符号，设置为true显示，false隐藏。加载完成，需要设置为false
                                     keyExtractor={(item,index)=>`${item.id}-${index}`}
-                                    renderItem={({item}) => (  //渲染列表的方式
+                                    renderItem={({item}) => {
+                                        console.log('item', item);
+                                        return (  //渲染列表的方式
 
-                                        <TouchableHighlight  onPress={()=>this.selectRent(item)} underlayColor="#367d80">
+                                            <TouchableHighlight  onPress={()=>this.selectRent(item)} underlayColor="#367d80">
 
-                                            <View>
-                                                <View
-                                                    style={{flexDirection:"row",justifyContent: "space-around",
-                                                        alignItems: 'center',borderRadius:10,
-                                                        padding:5,backgroundColor:item.selectRent ? "#5cd9e7" : "#fff"}}>
+                                                <View>
+                                                    <View
+                                                        style={{flexDirection:"row",justifyContent: "space-around",
+                                                            alignItems: 'center',borderRadius:10,
+                                                            padding:5,backgroundColor:item.selectRent ? "#5cd9e7" : "#fff"}}>
 
-                                                    <View style={{flexDirection:"row",flex:3,alignItems:"center"}}>
-                                                        <View style={{marginRight:8}}>
-                                                            <Image style={{height:30,width:30}} source={ item.isState==1?yijiao:(item.feeCode == '200002' ? electric : item.feeCode == '200001' ? water : item.feeCode == '100000' ? rent :fee) }/>
+                                                        <View style={{flexDirection:"row",flex:3,alignItems:"center"}}>
+                                                            <View style={{marginRight:8}}>
+                                                                <Image style={{height:30,width:30}} source={ item.isState!=0?yijiao:(item.feeCode == '200002' ? electric : item.feeCode == '200001' ? water : item.feeCode == '100000' ? rent :fee) }/>
+                                                            </View>
+                                                            <View>
+                                                                <Text style={{color:item.isState == 0?"#000":"grey",fontSize:18}}>
+                                                                    {item.feeName}
+                                                                </Text>
+                                                                <WhiteSpace size="xs"/>
+                                                                <Text style={{color:"grey"}}>{item.fromDate && item.fromDate.substring(5, 10)}至</Text>
+                                                                <Text style={{color:"grey"}}>{item.toDate && item.toDate.substring(5, 10)}</Text>
+                                                            </View>
                                                         </View>
-                                                        <View>
-                                                            <Text style={{color:item.isState == 0?"#000":"grey",fontSize:18}}>
-                                                                {item.feeName}
-                                                            </Text>
+
+                                                        <View  style={{flex:2}}>
+                                                            <Text style={{color:item.isState == 0?"#000":"grey"}}>{item.addDate && item.addDate.substring(5, 10)}应收</Text>
                                                             <WhiteSpace size="xs"/>
-                                                            <Text style={{color:"grey"}}>{item.fromDate && item.fromDate.substring(5, 10)}至</Text>
-                                                            <Text style={{color:"grey"}}>{item.toDate && item.toDate.substring(5, 10)}</Text>
+                                                            <Text style={{color:item.isState == 0?"#000":"grey"}}>{item.nextDate && moment(item.nextDate).format('MM-DD')}截止</Text>
+                                                        </View>
+
+                                                        <View style={{flex:2,alignItems:"center"}}>
+                                                            <Text style={{color:item.isState == 0?"#000":"grey",fontSize:18,fontWeight:"bold"}}>{item.rentPrice.toFixed(2)}</Text>
+                                                            {
+                                                                item.isFenqi == 1 &&
+                                                                <View style={{alignItems:'center'}}>
+                                                                    <Text style={{color:item.isState == 0?"red":"grey",fontWeight:"bold"}}>{`${(item.fenqiFee && item.fenqiFee.toFixed(2) || 0)}`}</Text>
+                                                                    <Text style={{color:item.isState == 0&&item.selectRent?"#fff":"grey",fontSize:10}}>{`月付手续费`}</Text>
+                                                                </View>
+                                                            }
+
+                                                            {
+                                                                item.lateFee>0 &&
+                                                                <View style={{alignItems:'center'}}>
+                                                                    <Text style={{color:item.isState == 0?"red":"grey",fontWeight:"bold"}}>{`${(item.lateFee && item.lateFee.toFixed(2) || 0)}`}</Text>
+                                                                    <Text style={{color:item.isState == 0&&item.selectRent?"#fff":"grey",fontSize:10}}>{`滞纳金`}</Text>
+                                                                </View>
+                                                            }
+
+                                                        </View>
+
+                                                        <View style={{flex:2,alignItems:"center"}}>
+                                                            {
+                                                                item.isState == 0 ? (
+
+                                                                        item.feeCode=='200001'||item.feeCode=='200002'||item.feeCode=='200007'?
+                                                                            <TouchableHighlight underlayColor="transparent" onPress={()=>{this.getBillInfo(item)}}>
+                                                                                <View  style={{alignItems:"center"}}>
+                                                                                    <Text style={{color:item.selectRent? "#fff":"#5cd9e7"}}>{item.selectRent?'待交':"选择"}</Text>
+                                                                                    <Text style={{color:'red',marginTop:8}}>查看详情</Text>
+                                                                                </View>
+                                                                            </TouchableHighlight>:
+                                                                            <Text style={{color:item.selectRent? "#fff":"#5cd9e7"}}>{item.selectRent?'待交':"选择"}</Text>
+
+
+                                                                    ) :
+                                                                    (
+                                                                        item.feeCode=='200001'||item.feeCode=='200002'||item.feeCode=='200007'?
+                                                                            <TouchableHighlight underlayColor="transparent" onPress={()=>{this.getBillInfo(item)}}>
+                                                                                <View  style={{alignItems:"center"}}>
+                                                                                    <Text style={{color:"grey"}}>已交</Text>
+                                                                                    <Text style={{color:'red',marginTop:8}}>查看详情</Text>
+                                                                                </View>
+                                                                            </TouchableHighlight>:
+                                                                            <Text style={{color:"grey"}}>已交</Text>)
+
+                                                            }
+
                                                         </View>
                                                     </View>
-
-                                                    <View  style={{flex:2}}>
-                                                        <Text style={{color:item.isState == 0?"#000":"grey"}}>{item.addDate && item.addDate.substring(5, 10)}应收</Text>
-                                                        <WhiteSpace size="xs"/>
-                                                        <Text style={{color:item.isState == 0?"#000":"grey"}}>{item.nextDate && moment(item.nextDate).format('MM-DD')}截止</Text>
-                                                    </View>
-
-                                                    <View style={{flex:2,alignItems:"center"}}>
-                                                        <Text style={{color:item.isState == 0?"#000":"grey",fontSize:18,fontWeight:"bold"}}>{item.rentPrice.toFixed(2)}</Text>
-                                                        {
-                                                            item.isFenqi == 1 &&
-                                                            <View style={{alignItems:'center'}}>
-                                                                <Text style={{color:item.isState == 0?"red":"grey",fontWeight:"bold"}}>{`${(item.fenqiFee && item.fenqiFee.toFixed(2) || 0)}`}</Text>
-                                                                <Text style={{color:item.isState == 0&&item.selectRent?"#fff":"grey",fontSize:10}}>{`月付手续费`}</Text>
-                                                            </View>
-                                                        }
-
-                                                        {
-                                                            item.lateFee>0 &&
-                                                            <View style={{alignItems:'center'}}>
-                                                                <Text style={{color:item.isState == 0?"red":"grey",fontWeight:"bold"}}>{`${(item.lateFee && item.lateFee.toFixed(2) || 0)}`}</Text>
-                                                                <Text style={{color:item.isState == 0&&item.selectRent?"#fff":"grey",fontSize:10}}>{`滞纳金`}</Text>
-                                                            </View>
-                                                        }
-
-                                                    </View>
-
-                                                    <View style={{flex:2,alignItems:"center"}}>
-                                                        {
-                                                            item.isState == 0 ? (
-
-                                                                item.feeCode=='200001'||item.feeCode=='200002'||item.feeCode=='200007'?
-                                                                <TouchableHighlight underlayColor="transparent" onPress={()=>{this.getBillInfo(item)}}>
-                                                                    <View  style={{alignItems:"center"}}>
-                                                                        <Text style={{color:item.selectRent? "#fff":"#5cd9e7"}}>{item.selectRent?'待交':"选择"}</Text>
-                                                                        <Text style={{color:'red',marginTop:8}}>查看详情</Text>
-                                                                    </View>
-                                                                </TouchableHighlight>:
-                                                                    <Text style={{color:item.selectRent? "#fff":"#5cd9e7"}}>{item.selectRent?'待交':"选择"}</Text>
-
-
-                                                                ) :
-                                                                (
-                                                                    item.feeCode=='200001'||item.feeCode=='200002'||item.feeCode=='200007'?
-                                                                        <TouchableHighlight underlayColor="transparent" onPress={()=>{this.getBillInfo(item)}}>
-                                                                            <View  style={{alignItems:"center"}}>
-                                                                                <Text style={{color:"grey"}}>已交</Text>
-                                                                                <Text style={{color:'red',marginTop:8}}>查看详情</Text>
-                                                                            </View>
-                                                                        </TouchableHighlight>:
-                                                                        <Text style={{color:"grey"}}>已交</Text>)
-
-                                                        }
-
-                                                    </View>
+                                                    <WhiteSpace size="xs"/>
                                                 </View>
-                                                <WhiteSpace size="xs"/>
-                                            </View>
-                                        </TouchableHighlight>)
+                                            </TouchableHighlight>
+                                        )
+                                    }
+
 
 
                                     }

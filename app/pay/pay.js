@@ -19,6 +19,7 @@ import zfb from './zfb.png'
 import wxTeach from './wechatPayTeach.png'
 import zfbTeach from './zfbTeach.png'
 import zfbTeach2 from './zfbTeach.jpeg'
+import zfbTeach1 from './zfbTeach2.jpeg'
 import add from './add.png'
 import wallet from './wallet.png'
 
@@ -805,7 +806,8 @@ export default class Clean extends Component {
                 // {text:"取消", onPress:this.cancelSelected},
                 {text:"确认", onPress:()=>{
 
-                        Linking.openURL('alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/tsx03647vxqajtgeoflyu4c');
+                        // Linking.openURL('alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/tsx03647vxqajtgeoflyu4c');
+                        Linking.openURL('alipayqr://');
 
                     }}
             ],
@@ -1778,7 +1780,8 @@ export default class Clean extends Component {
                 // {text:"取消", onPress:this.cancelSelected},
                 {text:"确认", onPress:()=>{
 
-                        Linking.openURL(item?"weixin://":`alipayqr://platformapi/startapp?saId=10000007&qrcode=${this.state.qrcode}`);
+                        // Linking.openURL(item?"weixin://":`alipayqr://platformapi/startapp?saId=10000007&qrcode=${this.state.qrcode}`);
+                        Linking.openURL(item?"weixin://":`alipayqr://`);
 
                     }}
             ],
@@ -2190,19 +2193,33 @@ export default class Clean extends Component {
                                                             <View style={styles.a}>
                                                                 <Text style={{flex: 1}}>支付说明:</Text>
                                                                 <View style={[styles.b, {flex: 3}]}>
-                                                                    <Text
-                                                                        style={{color: "black",fontWeight:"bold"}}>1.点击"复制并支付"按钮复制订单号，会自动将订单号复制到系统粘贴板中，且打开支付宝。</Text>
-                                                                    <Text style={{color: "red",fontWeight:"bold"}}>2.将复制好的订单号粘贴到支付宝转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
+                                                                    <Text style={{color: "black",fontWeight:"bold"}}>1.长按保存下方二维码。</Text>
+                                                                    <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>2.点击"复制并支付"按钮，将会自动复制订单号到系统粘贴板，且打开支付宝扫一扫。</Text>在"支付宝扫码"页面中选择右上角相册，选择第一步保存的二维码图片,将会打开支付宝转账支付页面</Text>
+                                                                    <Text style={{color: "red",fontWeight:"bold"}}>3.将复制好的订单号粘贴到支付宝转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>
 
-                                                                    <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>3.输入转账金额,</Text>金额为
+                                                                    <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>4.输入转账金额,</Text>金额为
                                                                         <Text
                                                                             style={{color: "red", fontWeight: "bold"}}>
 
                                                                             {(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
 
                                                                             元(必须为{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
-                                                                            元多转或少转都会导致支付失败！！！)</Text></Text>
+                                                                            元多转或少转都会导致系统判定支付失败！！！)</Text></Text>
                                                                 </View>
+                                                                {/*<View style={[styles.b, {flex: 3}]}>*/}
+                                                                    {/*<Text*/}
+                                                                        {/*style={{color: "black",fontWeight:"bold"}}>1.点击"复制并支付"按钮复制订单号，会自动将订单号复制到系统粘贴板中，且打开支付宝。</Text>*/}
+                                                                    {/*<Text style={{color: "red",fontWeight:"bold"}}>2.将复制好的订单号粘贴到支付宝转账页面的备注中。此操作一定要做，否则系统判定支付失败。</Text>*/}
+
+                                                                    {/*<Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>3.输入转账金额,</Text>金额为*/}
+                                                                        {/*<Text*/}
+                                                                            {/*style={{color: "red", fontWeight: "bold"}}>*/}
+
+                                                                            {/*{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}*/}
+
+                                                                            {/*元(必须为{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}*/}
+                                                                            {/*元多转或少转都会导致支付失败！！！)</Text></Text>*/}
+                                                                {/*</View>*/}
                                                             </View>
                                                             <View style={styles.a}>
                                                                 <Text style={{flex: 1}}>订单号(该订单号为您支付的唯一凭证):</Text>
@@ -2242,6 +2259,7 @@ export default class Clean extends Component {
                                                                     </TouchableHighlight>
                                                                 </View>
 
+
                                                                 {/*<View style={{alignItems: "center", padding: 10}}>*/}
                                                                     {/*<TouchableHighlight underlayColor={"transparent"}*/}
                                                                                         {/*style={{*/}
@@ -2265,6 +2283,27 @@ export default class Clean extends Component {
                                                                 {/*</View>*/}
 
                                                             </View>
+
+                                                                <TouchableHighlight onLongPress={()=>{
+
+
+                                                                    if(Platform.OS== 'android'){
+                                                                        this.permissions(this.state.qrcode)
+                                                                    }else {
+                                                                        this.download(this.state.qrcode)
+                                                                    }
+
+
+                                                                }} underlayColor="transparent">
+
+                                                                    <Image  style={{
+                                                                        width: "100%",
+                                                                        height: 300,
+                                                                        resizeMode: "contain"
+                                                                    }} source={{uri:this.state.qrcode}}/>
+
+
+                                                                </TouchableHighlight>
 
 
                                                             <View>
@@ -2305,19 +2344,33 @@ export default class Clean extends Component {
                                                             <View style={styles.a}>
                                                                 <Text style={{flex: 1}}>支付说明:</Text>
                                                                 <View style={[styles.b, {flex: 3}]}>
-                                                                    <Text
-                                                                        style={{color: "grey"}}>1.点击"打开支付宝"按钮,会直接进入转账页面。</Text>
-                                                                    <Text style={{color: "grey"}}>2.输入转账金额,金额为
+                                                                    <Text style={{color: "black",fontWeight:"bold"}}>1.长按保存下方二维码。</Text>
+                                                                    <Text style={{color: "black",fontWeight:"bold"}}>2.打开支付宝，点击"扫一扫，"在"支付宝扫码"页面中选择右上角相册，选择第一步保存的二维码图片,将会打开支付宝转账支付页面。</Text>
+                                                                    <Text style={{color: "grey"}}><Text style={{color: "black",fontWeight:"bold"}}>3.输入转账金额,</Text>金额为
                                                                         <Text
                                                                             style={{color: "red", fontWeight: "bold"}}>
 
                                                                             {(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
 
                                                                             元(必须为{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}
-                                                                            元多转或少转都会导致支付失败！！！)</Text></Text>
-                                                                    <Text
-                                                                        style={{color: "grey"}}>3.转账成功后，将支付宝交易号复制到输入框并确认。(支付宝交易号在支付宝页面-我的-账单-找到刚转账的订单点进去订单详情页-复制订单号)</Text>
+                                                                            元多转或少转都会导致系统判定支付失败！！！)</Text></Text>
+                                                                    <Text style={{color: "grey"}}>4.转账成功后，将支付宝交易号复制到输入框并确认。(支付宝交易号在支付宝页面-我的-账单-找到刚转账的订单点进去订单详情页-复制订单号)</Text>
+
                                                                 </View>
+                                                                {/*<View style={[styles.b, {flex: 3}]}>*/}
+                                                                    {/*<Text*/}
+                                                                        {/*style={{color: "grey"}}>1.点击"打开支付宝"按钮,会直接进入转账页面。</Text>*/}
+                                                                    {/*<Text style={{color: "grey"}}>2.输入转账金额,金额为*/}
+                                                                        {/*<Text*/}
+                                                                            {/*style={{color: "red", fontWeight: "bold"}}>*/}
+
+                                                                            {/*{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}*/}
+
+                                                                            {/*元(必须为{(this.state.Accounts == null) ? (dataPay.price || dataPay.price === 0 ? (dataPay.price).toFixed(2) : (dataPay.dataPay.amount).toFixed(2)) : this.state.Accounts.toFixed(2)}*/}
+                                                                            {/*元多转或少转都会导致支付失败！！！)</Text></Text>*/}
+                                                                    {/*<Text*/}
+                                                                        {/*style={{color: "grey"}}>3.转账成功后，将支付宝交易号复制到输入框并确认。(支付宝交易号在支付宝页面-我的-账单-找到刚转账的订单点进去订单详情页-复制订单号)</Text>*/}
+                                                                {/*</View>*/}
                                                             </View>
                                                             <View style={styles.a}>
                                                                 <Text style={{flex: 1}}>支付宝订单号:</Text>
@@ -2390,6 +2443,27 @@ export default class Clean extends Component {
                                                             </View>
 
 
+                                                                <TouchableHighlight onLongPress={()=>{
+
+
+                                                                    if(Platform.OS== 'android'){
+                                                                        this.permissions(this.state.qrcode)
+                                                                    }else {
+                                                                        this.download(this.state.qrcode)
+                                                                    }
+
+
+                                                                }} underlayColor="transparent">
+
+                                                                    <Image  style={{
+                                                                        width: "100%",
+                                                                        height: 300,
+                                                                        resizeMode: "contain"
+                                                                    }} source={{uri:this.state.qrcode}}/>
+
+
+                                                                </TouchableHighlight>
+
                                                             <View>
                                                                 <View>
                                                                     <Text style={{
@@ -2417,7 +2491,7 @@ export default class Clean extends Component {
                                                                     width: "100%",
                                                                     height: 3000,
                                                                     resizeMode: "contain"
-                                                                }} source={zfbTeach}/>
+                                                                }} source={zfbTeach1}/>
 
                                                             </View>
 

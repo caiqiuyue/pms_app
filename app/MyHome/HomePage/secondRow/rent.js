@@ -373,17 +373,18 @@ export default class Rent extends Component {
         let {dataSource} = this.state;
         let monthRent = 0, allRent = 0, type = false;
         let status = item.feeCode == "100000" && !item.selectRent;
-        console.log(status);
+        console.log('item', item);
         if(item.isState == 0){
 
 
 
             // if(this.props.type == 3 && !(this.bet || this.dep) && this.flag && item.feeCode == "100000") {
-            if(!(this.bet || this.dep) && this.flag && item.feeCode == "100000") {
+            if(!(this.bet || this.dep) && status && item.feeCode == "100000") {
                 this.flag = false;
                 let num = 0;
                 let data = dataSource.map((_item)=>{
-                    if(this.type) {
+                    // if(this.type) {
+                    if(item.isFenqi) {
                         if(_item.isState == 0 && _item.isFenqi &&  _item.feeCode == "100000" && num < 1) {
                             _item.disabled = false;
                             _item.checked = true;
@@ -392,7 +393,7 @@ export default class Rent extends Component {
                             num ++;
                         }
                     } else {
-                        if(_item.isState == 0 && _item.feeCode == "100000" && num < this.payMonth) {
+                        if(_item.isState == 0 && !_item.isFenqi && _item.feeCode == "100000" && num < this.payMonth) {
                             _item.disabled = false;
                             _item.checked = true;
                             _item.selectRent = true;
@@ -428,10 +429,20 @@ export default class Rent extends Component {
                 let data = null;
                 if(item.checked) {
                     data = dataSource.map(_item => {
-                        if(_item.feeCode == "100000"&&_item.isState == 0) {
-                            _item.disabled = false;
-                            _item.selectRent = false;
+                        if (item.isFenqi) {
+                            if(_item.feeCode == "100000"&&_item.isState == 0) {
+                                _item.disabled = false;
+                                _item.checked = false;
+                                _item.selectRent = false;
+                            }
+                        } else {
+                            if(_item.feeCode == "100000"&&_item.isState == 0 && !_item.isFenqi) {
+                                _item.disabled = false;
+                                _item.checked = false;
+                                _item.selectRent = false;
+                            }
                         }
+
                         if(_item.selectRent&&_item.isState == 0) {
 
                             if(_item.fenqiFee&&_item.isState == 0){
@@ -885,7 +896,7 @@ export default class Rent extends Component {
                                     refreshing={refreshing} //下拉刷新时候的正在加载的符号，设置为true显示，false隐藏。加载完成，需要设置为false
                                     keyExtractor={(item,index)=>`${item.id}-${index}`}
                                     renderItem={({item}) => {
-                                        console.log('item', item);
+                                        // console.log('item', item);
                                         return (  //渲染列表的方式
 
                                             <TouchableHighlight  onPress={()=>this.selectRent(item)} underlayColor="#367d80">

@@ -31,6 +31,7 @@ export default class Clean extends Component {
             code:3,
             status:'',
             data:"",
+            keeping:"",
             lease:"",
             flag:false,
             monthData:[
@@ -112,13 +113,15 @@ export default class Clean extends Component {
             return params;
         }
         const {getParam} = this.props.navigation;
-        const data = getParam("user");
+        let datas = getParam("user")
+        const data = datas.data;
+        console.log(data,'data')
 
         console.log(11111);
         this.setState({
             status:data.status === "0" ? 0 : data.status == 1 ? 1
                 : data.status == 3 ? 3:data.status == 4 ? 4 : 11,
-            data
+            data,keeping:datas.keeping
         })
 
     }
@@ -181,7 +184,7 @@ export default class Clean extends Component {
 
     render() {
 
-        let {status,flag} = this.state;
+        let {status,flag,keeping} = this.state;
 
         return (
 
@@ -219,8 +222,8 @@ export default class Clean extends Component {
                                             <View>
                                                 <View>
                                                     <Text>政策：</Text>
-                                                    <Text style={{color:"grey"}}>1.续租以公寓最新的租金执行</Text>
-                                                    <Text style={{color:"grey"}}>2.续租在原有租期进行延续</Text>
+                                                    <Text style={{color:"grey"}}>{keeping}</Text>
+                                                    {/*<Text style={{color:"grey"}}>2.续租在原有租期进行延续</Text>*/}
                                                     <WhiteSpace size="lg"/>
 
                                                     <Text>续租：</Text>

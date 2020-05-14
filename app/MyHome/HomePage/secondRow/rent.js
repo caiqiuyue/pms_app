@@ -203,9 +203,11 @@ export default class Rent extends Component {
                         });
                     }
 
+
+
                     this.setState({
                         dataSource:data,
-                        contractNum:param.length,
+                        contractNum:response.data.rentPeriod,
                         complete:complete.length,
                         willpaid:willpaid.length,
                         allRent,
@@ -375,8 +377,6 @@ export default class Rent extends Component {
         let status = item.feeCode == "100000" && !item.selectRent;
         console.log('item', item);
         if(item.isState == 0){
-
-
 
             // if(this.props.type == 3 && !(this.bet || this.dep) && this.flag && item.feeCode == "100000") {
             if(!(this.bet || this.dep) && status && item.feeCode == "100000") {
@@ -853,7 +853,7 @@ export default class Rent extends Component {
                         <View  style={{height:Dimensions.get("window").height}}>
 
                             <View style={{flex:1,alignItems:"center",backgroundColor:"grey",height:20,width:Dimensions.get("window").width,top:0,position:"absolute",zIndex:999}}>
-                                <Text>您有<Text style={{color:"red"}}>{willpaid}笔</Text>{`账单待支付${!type ? `,合约${contractNum}个月，完成${complete}个月` : ''}`}</Text>
+                                <Text>您有<Text style={{color:"red"}}>{willpaid}笔</Text>{`账单待支付${!type ? `,合约${contractNum}个月` : ''}`}</Text>
                             </View>
 
 

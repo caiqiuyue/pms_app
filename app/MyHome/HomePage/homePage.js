@@ -651,6 +651,7 @@ class A extends Component {
                             if(data.status==2){
                                 navigate('RefundRentDetail',{ user:data})
                             }else{
+                                data = response.data
                                 navigate('RefondRent',{ user:data })
                             }
 
@@ -681,6 +682,7 @@ class A extends Component {
                             if(data.status==2){
                                 navigate('ForRenewalDetail',{ user:data})
                             }else{
+                                data = response.data
                                 navigate('ForRenewal',{ user:data })
                             }
 
@@ -710,7 +712,8 @@ class A extends Component {
                             if(data.status==2){
                                 navigate('SubletDetail',{ user:data})
                             }else{
-                                navigate('Sublet',{ user:data || {} })
+                                data = response.data
+                                navigate('Sublet',{ user:data})
                             }
 
                         })
@@ -738,6 +741,7 @@ class A extends Component {
                             if(data.status==2){
                                 navigate('ChangeDetail',{ user:data})
                             }else{
+                                data = response.data
                                 navigate('ChangeRooms',{ user:data })
                             }
 
@@ -956,9 +960,9 @@ class A extends Component {
 
                                                     <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>实名认证</Text></View>
 
-                                                    <TouchableHighlight underlayColor={"#fff"} onPress={this._setModalVisible.bind(this,false)}>
-                                                        <Image style={{height:30,width:30}} source={close}/>
-                                                    </TouchableHighlight>
+                                                    {/*<TouchableHighlight underlayColor={"#fff"} onPress={this._setModalVisible.bind(this,false)}>*/}
+                                                        {/*<Image style={{height:30,width:30}} source={close}/>*/}
+                                                    {/*</TouchableHighlight>*/}
 
 
                                                 </View>

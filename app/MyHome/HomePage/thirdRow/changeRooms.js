@@ -33,6 +33,7 @@ export default class ChangeRooms extends Component {
             name:[],
             allData:[],
             status:"",
+            keeping:'',
             newRoomNo:"",
             flag:false,
             Allflag:false,
@@ -57,7 +58,8 @@ export default class ChangeRooms extends Component {
         }
 
         const {getParam} = this.props.navigation;
-        const data = getParam("user");
+        let datas = getParam("user")
+        const data = datas.data;
 
         console.log(data,'data');
 
@@ -74,7 +76,7 @@ export default class ChangeRooms extends Component {
             dataRoom:data.roomState&&data.roomState,
             datas:data.roomState&&data.roomState,
             allData:data.roomState&&data.roomState,
-            data,
+            data,keeping:datas.keeping,
             name:bulidName
         })
 
@@ -266,7 +268,7 @@ export default class ChangeRooms extends Component {
         }
 
 
-        let {status,data,flag,room,Allflag} = this.state;
+        let {keeping,status,data,flag,room,Allflag} = this.state;
 
         return (
 
@@ -306,9 +308,9 @@ export default class ChangeRooms extends Component {
                                                     <View style={{marginLeft:15}}>
                                                         <Text style={{color:"#000"}}>换房政策：</Text>
                                                         <WhiteSpace size="xs"/>
-                                                        <Text style={{color:"grey"}}>1.换房需要提前1天申请，管家上门检查</Text>
-                                                        <WhiteSpace size="lg"/>
-                                                        <Text style={{color:"grey"}}>2.换房成功后，需补交差额押金和差额房费</Text>
+                                                        <Text style={{color:"grey"}}>{keeping}</Text>
+                                                        {/*<WhiteSpace size="lg"/>*/}
+                                                        {/*<Text style={{color:"grey"}}>2.换房成功后，需补交差额押金和差额房费</Text>*/}
                                                         <WhiteSpace size="lg"/>
                                                         <View style={{flexDirection:"row"}}>
                                                             <View><Text style={{color:"#000"}}>当前房间:</Text></View>

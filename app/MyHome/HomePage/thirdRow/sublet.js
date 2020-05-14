@@ -27,6 +27,7 @@ export default class Clean extends Component {
         this.state = {
             data:{},
             status:"",
+            keeping:"",
             flag:false,
         };
     }
@@ -44,13 +45,15 @@ export default class Clean extends Component {
             return params;
         }
         const {getParam} = this.props.navigation;
-        const data = getParam("user");
+        let datas = getParam("user")
+        const data = datas.data;
 
-        console.log(11111);
+
+
         this.setState({
             status:data.status === "0" ? 0 : data.status == 1 ? 1
                 : data.status == 3 ? 3:data.status == 4 ? 4 : 11,
-            data
+            data,keeping:datas.keeping
         })
 
     }
@@ -100,7 +103,7 @@ export default class Clean extends Component {
 
     render() {
 
-        let {status,flag,data} = this.state;
+        let {keeping,status,flag,data} = this.state;
 
         return (
 
@@ -145,12 +148,12 @@ export default class Clean extends Component {
                                         <View>
                                             <View>
                                                 <Text>政策：</Text>
-                                                <Text style={{color:"grey"}}>1.转租成功公寓将要加收月租50%服务费，押金全部退回。</Text>
-                                                <WhiteSpace size="lg"/>
-                                                <Text style={{color:"grey"}}>2.转租期间涉及到管家带人看房，请做好配合。</Text>
-                                                <WhiteSpace size="lg"/>
-                                                <Text style={{color:"grey"}}>2.申请转租，立即生效。转租成功后，需支付50%房租转租服务费。剩余房费和押金将在退款时候结算。</Text>
-                                                <WhiteSpace size="lg"/>
+                                                <Text style={{color:"grey"}}>{keeping}</Text>
+                                                {/*<WhiteSpace size="lg"/>*/}
+                                                {/*<Text style={{color:"grey"}}>2.转租期间涉及到管家带人看房，请做好配合。</Text>*/}
+                                                {/*<WhiteSpace size="lg"/>*/}
+                                                {/*<Text style={{color:"grey"}}>2.申请转租，立即生效。转租成功后，需支付50%房租转租服务费。剩余房费和押金将在退款时候结算。</Text>*/}
+                                                {/*<WhiteSpace size="lg"/>*/}
 
                                                 <View style={{alignItems:"center"}}>
                                                     <TouchableHighlight underlayColor={flag ? "#fff" : "#367d80"} style={{padding:10,

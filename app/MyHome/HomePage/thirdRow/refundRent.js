@@ -28,6 +28,7 @@ export default class Clean extends Component {
         this.state = {
             date:"",
             text:"",
+            keeping:"",
             evaluationText:"",
             code:3,
             data:{},
@@ -50,13 +51,14 @@ export default class Clean extends Component {
             return params;
         }
         const {getParam} = this.props.navigation;
-        const data = getParam("user");
-        
+        let datas = getParam("user")
+        const data = datas.data;
+
         console.log(11111);
         this.setState({
             status:data.status === "0" ? 0 : data.status == 1 ? 1
                 : data.status == 3 ? 3:data.status == 4 ? 4 : 11,
-            data
+            data,keeping:datas.keeping
         })
 
 
@@ -129,7 +131,7 @@ export default class Clean extends Component {
         }
 
 
-        let {data,status,dataObj,flag}  = this.state;
+        let {keeping,data,status,dataObj,flag}  = this.state;
 
         return (
 
@@ -166,7 +168,7 @@ export default class Clean extends Component {
                                     <View>
                                         <View style={{marginLeft:15}}>
                                             <Text style={{color:"#000"}}>退租政策:</Text>
-                                            <Text style={{color:"grey"}}>退租提前15天申请，否则不退押金。提前退租，加收一个月房租作为违约金。</Text>
+                                            <Text style={{color:"grey"}}>{keeping}</Text>
                                             <WhiteSpace size="lg"/>
                                             <Text>正常退租日期：{data.checkout_date ? moment(data.checkout_date).format('YYYY-MM-DD') : '--'}</Text>
 

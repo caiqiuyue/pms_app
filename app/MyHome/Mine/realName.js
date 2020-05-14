@@ -148,7 +148,7 @@ export default class Mine extends React.Component {
                                     response.data.data.map(item=>{
                                         if(item.feeCode== "100101"){
                                             const { navigate } = this.props.navigation;
-                                            navigate('AllBills',{ user:"" });
+                                            navigate('Rent',{ user:"" });
                                         }
                                     })
 
@@ -174,7 +174,7 @@ export default class Mine extends React.Component {
                                 response.data.data.map(item=>{
                                     if(item.feeCode== "100101"){
                                         const { navigate } = this.props.navigation;
-                                        navigate('AllBills',{ user:"" });
+                                        navigate('Rent',{ user:"" });
                                     }
                                 })
 

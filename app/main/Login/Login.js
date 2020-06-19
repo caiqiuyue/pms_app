@@ -11,6 +11,7 @@ import Dimensions from 'Dimensions';
 initReactFastclick();
 
 import JPushModule from 'jpush-react-native'
+import Txt from './a'
 
 import loginCss from './style/loginCss'
 
@@ -18,6 +19,8 @@ import lockIcon from './style/lockIcon.png'
 import phoneIcon from './style/phoneIcon.png'
 import eye_close from './style/eye_close.png'
 import eye_open from './style/eye_open.png'
+import yes from './style/yes.png'
+import no from './style/no.png'
 import bg from './style/bg.png'
 import {ifIphoneX} from "react-native-iphone-x-helper/index";
 import close from "../../MyHome/Mine/style/close.jpg";
@@ -32,7 +35,9 @@ export default class Login extends Component {
             phoneType: false,
             passwordType: false,
             url:"",
+            modalName:"",
             passwordT:true,
+            yinsiFlag:true,
             passwordFlag:false,
             registrationId:null,
             margintop:0,
@@ -58,7 +63,7 @@ export default class Login extends Component {
             }else {
                 i.flag=false
             }
-            
+
         })
         this.contracts = item
         console.log(this.contracts,'this.contractsthis.contracts');
@@ -407,9 +412,8 @@ export default class Login extends Component {
                                         this.userInfo = username
                                         this.tokenKey = tokenKey
                                         this.contracts= {}
-                                        this._setModalVisible(true)
                                         this.setState({
-                                            contractData:res.data.data,
+                                            contractData:res.data.data,modalVisible:true,modalName:'合同'
 
                                         })
                                     }
@@ -466,7 +470,7 @@ export default class Login extends Component {
 
                 overflow:"hidden"}
             : null;
-        const { contractData,phone, password, phoneType, passwordType ,passwordT,passwordFlag} = this.state;
+        const {yinsiFlag, contractData,modalName, password, phoneType, passwordType ,passwordT,passwordFlag} = this.state;
         //console.log(phone, password, phoneType, passwordType);
         return (
             <View style={{height: Dimensions.get('window').height, backgroundColor:"#fff",marginTop:this.state.margintop}}>
@@ -487,7 +491,7 @@ export default class Login extends Component {
                                 <View>
                                     <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
 
-                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>选择合同</Text></View>
+                                        <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>{modalName=="合同"?'选择合同':''}</Text></View>
 
                                         <TouchableHighlight underlayColor={"#fff"} onPress={this._setModalVisible.bind(this,false)}>
                                             <Image style={{height:30,width:30}} source={close}/>
@@ -495,39 +499,44 @@ export default class Login extends Component {
 
                                     </View>
 
-                                    <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
-                                        <View style={{padding:10,flexDirection:"row",justifyContent:"space-around",flexWrap:"wrap"}}>
-                                            {
-                                                contractData.length>0&& contractData.map((item,index)=>
+                                    {
+                                        modalName=="合同"?
+                                            <View>
+                                                <ScrollView style={{maxHeight:Dimensions.get('window').height-200}}>
+                                                    <View style={{padding:10,flexDirection:"row",justifyContent:"space-around",flexWrap:"wrap"}}>
+                                                        {
+                                                            contractData.length>0&& contractData.map((item,index)=>
 
-                                                    <TouchableHighlight onPress={()=>{this.chooseConstract(item)}} underlayColor="transparent" key={index} style={{width:"48%",padding:10,borderWidth:1,borderColor:"#f0f0f0",borderRadius:10,backgroundColor:item.flag?"#f17e3a":"#fff",marginTop:10}}>
-                                                        <View style={{alignItems:"center",justifyContent:"center"}}>
-                                                            <Text>{item.hotelName}</Text>
-                                                            <Text style={{marginTop:5,fontSize:16,fontWeight:"bold"}}>{item.roomNo}</Text>
-                                                            <Text style={{marginTop:5,}}>{item.status==1?'在住':'已退房'}</Text>
-                                                        </View>
+                                                                <TouchableHighlight onPress={()=>{this.chooseConstract(item)}} underlayColor="transparent" key={index} style={{width:"48%",padding:10,borderWidth:1,borderColor:"#f0f0f0",borderRadius:10,backgroundColor:item.flag?"#f17e3a":"#fff",marginTop:10}}>
+                                                                    <View style={{alignItems:"center",justifyContent:"center"}}>
+                                                                        <Text>{item.hotelName}</Text>
+                                                                        <Text style={{marginTop:5,fontSize:16,fontWeight:"bold"}}>{item.roomNo}</Text>
+                                                                        <Text style={{marginTop:5,}}>{item.status==1?'在住':'已退房'}</Text>
+                                                                    </View>
+                                                                </TouchableHighlight>
+
+                                                            )
+                                                        }
+
+                                                    </View>
+                                                </ScrollView>
+                                                <View style={{alignItems:"center",marginTop:10}}>
+                                                    <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
+                                                        borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
+                                                        borderRadius:5}} onPress={()=>{this.submitConstract() }}>
+                                                        <Text
+                                                            style={{fontSize:16,textAlign:"center",color:"#fff"}}>
+
+                                                            确定
+
+                                                        </Text>
                                                     </TouchableHighlight>
-
-                                                )
-                                            }
-
-                                        </View>
-                                    </ScrollView>
+                                                </View>
+                                            </View>:
+                                            <Txt/>
+                                    }
 
 
-
-                                    <View style={{alignItems:"center",marginTop:10}}>
-                                        <TouchableHighlight underlayColor={"transparent"} style={{padding:10,
-                                            borderWidth:1,borderColor:"#fff",width:100,backgroundColor:"#f17e3a",
-                                            borderRadius:5}} onPress={()=>{this.submitConstract() }}>
-                                            <Text
-                                                style={{fontSize:16,textAlign:"center",color:"#fff"}}>
-
-                                                确定
-
-                                            </Text>
-                                        </TouchableHighlight>
-                                    </View>
                                 </View>
                             </View>
                         </View>
@@ -614,45 +623,23 @@ export default class Login extends Component {
 
                         </View>
 
-                        {/*<View style={{margin:10}}>*/}
-                            {/*<Text style={{color:"grey"}}>初始值密码为:12345678</Text>*/}
-                        {/*</View>*/}
-
-
-                        {/*<View style={styles.phoneNum}>*/}
-                        {/*<View style={{paddingTop:10}}><Image source={lockIcon} style={styles.iconImg}/></View>*/}
-                        {/*<InputItem*/}
-                        {/*type={passwordT}*/}
-                        {/*placeholder="请输入密码"*/}
-                        {/*className="input"*/}
-                        {/*style={{flex:1}}*/}
-                        {/*onChange={this.handlePasswordChange}*/}
-                        {/*value={password}*/}
-                        {/*error={passwordType}*/}
-                        {/*onErrorClick={this.handlepasswordError}*/}
-
-                        {/*>*/}
-                        {/*</InputItem>*/}
-
-                        {/*<TouchableHighlight underlayColor="#fff" onPress={this.changePasswordType} style={{marginTop:10,marginRight:10}}>*/}
-                        {/*<View>*/}
-                        {/*<Image source={passwordFlag ? eye_open : eye_close} style={styles.iconImg}/>*/}
-                        {/*</View>*/}
-                        {/*</TouchableHighlight>*/}
-
-                        {/*</View>*/}
-
-
 
 
                     </View>
 
                     <Button
-                        style={{backgroundColor:'#ef813a',borderRadius:20,marginTop:20,marginBottom:20}}
+                        style={{backgroundColor:'#ef813a',borderRadius:20,marginTop:20,marginBottom:10}}
                         onClick={this.handleSublit}
                     >
                         <Text style={{color:"#fff"}}>登陆</Text>
                     </Button>
+
+                    <View style={{flexDirection:"row",marginBottom:20,alignItems:"center"}}>
+                        <TouchableHighlight underlayColor="#fff" onPress={()=>{this.setState({yinsiFlag:!yinsiFlag})}}><Image source={yinsiFlag ? yes : no} style={styles.iconImg2} /></TouchableHighlight>
+
+                        <Text style={{color:"#ccc"}}>已同意<Text style={{textDecorationLine:"underline"}} onPress={()=>{this.setState({modalVisible:true,modalName:"闪猪服务协议"})}}>《闪猪服务协议》</Text>及<Text  style={{textDecorationLine:"underline"}} onPress={()=>{this.setState({modalVisible:true,modalName:"闪猪服务协议"})}}>《隐私政策》</Text></Text>
+                    </View>
+
                     <View style={{flexDirection:"row",justifyContent:"space-between",padding:5}}>
                         <TouchableHighlight onPress={() => {
                             const { navigate } = this.props.navigation;

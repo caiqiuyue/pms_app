@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,CameraRoll, Text, TouchableHighlight, Image, ScrollView, StyleSheet,Platform} from 'react-native';
+import {View, CameraRoll, Text, TouchableHighlight, Image, ScrollView, StyleSheet, Platform, Modal} from 'react-native';
 import myContract from './style/myContract.png'
 import realName from './style/1-60xp.png'
 import bankcard from './style/2-60px.png'
@@ -13,6 +13,8 @@ import Dimensions from "Dimensions";
 import RealName from "./realName";
 import BankCard from "./bankCard";
 import ChangePhoneNum from "./changePhoneNum";
+import close from "./style/close.jpg";
+import Txt from "../../main/Login/a";
 
 export default class Mine extends React.Component {
     constructor(props) {
@@ -22,6 +24,9 @@ export default class Mine extends React.Component {
             cardImgList:[],
             bankCardJson:null,
             emergencyJson:null,
+            animationType: 'none',//none slide fade
+            modalVisible: false,//模态场景是否可见
+            transparent: true,//是否透明显示
         }
 
     }
@@ -94,6 +99,10 @@ export default class Mine extends React.Component {
 
     };
 
+    _setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+    };
+
     //设置银行卡
     bankcardbtn = ()=>{
         const { navigate } = this.props.navigation;
@@ -138,10 +147,52 @@ export default class Mine extends React.Component {
 
 
     render(){
+        //弹框
+        let modalBackgroundStyle = {
+            backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : 'red',
+        };
+        let innerContainerTransparentStyle = this.state.transparent
+            ? { backgroundColor: '#fff', padding: 10 ,
+
+                overflow:"hidden"}
+            : null;
+
+        const { modalName,} = this.state;
+
 
         return (
 
             <View style={{height:Dimensions.get("window").height,backgroundColor:"#fff",}}>
+
+                <Modal
+                    animationType={this.state.animationType}
+                    transparent={this.state.transparent}
+                    visible={this.state.modalVisible}
+
+                    onRequestClose={() => { this._setModalVisible(false) } }
+
+                >
+                    <View style={[styles.container,modalBackgroundStyle]}>
+                        <View style={[styles.innerContainer,innerContainerTransparentStyle]}>
+
+                            <View>
+                                <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
+
+                                    <View  style={{flex:1,alignItems:'center'}}><Text style={{fontSize:20}}>{''}</Text></View>
+
+                                    <TouchableHighlight underlayColor={"#fff"} onPress={this._setModalVisible.bind(this,false)}>
+                                        <Image style={{height:30,width:30}} source={close}/>
+                                    </TouchableHighlight>
+
+                                </View>
+
+                                <Txt/>
+
+
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
                 <ScrollView>
                     <View style={{flex:1,
                         ...Platform.select({
@@ -223,6 +274,11 @@ export default class Mine extends React.Component {
                                 </TouchableHighlight>
                             </View>
 
+
+                            <View style={{alignItems:"center",marginTop:30}}>
+                                <Text style={{color:"#ccc"}}><Text style={{textDecorationLine:"underline"}} onPress={()=>{this.setState({modalVisible:true})}}>《服务协议》</Text>｜<Text  style={{textDecorationLine:"underline"}} onPress={()=>{this.setState({modalVisible:true,modalName:"闪猪服务协议"})}}>《隐私政策》</Text></Text>
+                            </View>
+
                         </View>
 
                     </View>
@@ -248,8 +304,17 @@ const styles = StyleSheet.create({
 
     imgView:{
         marginRight:10
-    }
-    
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+
+    },
+    innerContainer: {
+        borderRadius: 10,
+    },
+
 
 });
 

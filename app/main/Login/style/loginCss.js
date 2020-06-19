@@ -28,6 +28,11 @@ const loginCss = {
         height: 23,
         marginLeft:10
     },
+    iconImg2:{
+        width: 18,
+        height: 18,
+
+    },
     phoneNum:{
     flexDirection:"row",
         justifyContent:"flex-start"

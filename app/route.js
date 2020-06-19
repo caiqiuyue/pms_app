@@ -21,6 +21,7 @@ import Bill from './MyHome/Mine/myBill';
 import SelectItem from './MyHome/GoodSelect/select';
 import SeeRoom from './MyHome/GoodSelect/seeRoom';
 import Pay from './pay/pay';
+import Pay2 from './pay/pay2';
 import RealNamePay from './pay/realNamePay';
 import AddBankCard from './pay/addBankCard';
 import YiPay from './pay/yiPay';

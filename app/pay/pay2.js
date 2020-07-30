@@ -851,7 +851,7 @@ export default class Clean extends Component {
 
 
                 data.yiPay.webCallbackUrl='http://www.fangapo.cn/yiPaySuccess.html';
-                data.yiPay.payTool='OUR_ALIPAY';
+                data.yiPay.payTool=5;
                 data.yiPay.credit=2;
                 data.yiPay.couponIds=this.state.couponId;
 
@@ -869,7 +869,7 @@ export default class Clean extends Component {
                     }
 
 
-                    axios.post(`/pay/orderConsume`,data.yiPay)
+                    axios.post(`/payNew/orderConsume`,data.yiPay)
                         .then( (response)=> {
                             console.log(response,'支付宝');
 
@@ -1643,35 +1643,35 @@ export default class Clean extends Component {
 
                     </TouchableHighlight>
 
-                    {/*{*/}
-                        {/*// zfbPayFlag&&*/}
-                        {/*<TouchableHighlight underlayColor="transparent"*/}
-                                            {/*onPress={()=>this.selectPayType(6)}*/}
-                                            {/*style={[styles.view,styles.padd]}>*/}
+                    {
+                        // zfbPayFlag&&
+                        <TouchableHighlight underlayColor="transparent"
+                                            onPress={()=>this.selectPayType(6)}
+                                            style={[styles.view,styles.padd]}>
 
-                            {/*<View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>*/}
+                            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
 
 
-                                {/*<View style={{flexDirection:"row",alignItems:"center"}}>*/}
-                                    {/*<View>*/}
-                                        {/*<Image style={styles.payImg} source={alipay}/>*/}
-                                    {/*</View>*/}
+                                <View style={{flexDirection:"row",alignItems:"center"}}>
+                                    <View>
+                                        <Image style={styles.payImg} source={alipay}/>
+                                    </View>
 
-                                    {/*<View style={{width:100}}>*/}
-                                        {/*<Text>支付宝支付</Text>*/}
-                                    {/*</View>*/}
-                                {/*</View>*/}
+                                    <View style={{width:100}}>
+                                        <Text>支付宝支付</Text>
+                                    </View>
+                                </View>
 
-                                {/*<View style={{...Platform.select({*/}
+                                <View style={{...Platform.select({
 
-                                    {/*}),backgroundColor:wechatPayType == 6 ? "#55b72d" :'#fff',*/}
-                                    {/*width:20,height:20,borderRadius:10,borderColor:"#f0f0f0",borderWidth:1,overflow:"hidden"}} >*/}
-                                    {/*<Image style={styles.paySelect} source={selectIcon}/>*/}
-                                {/*</View>*/}
-                            {/*</View>*/}
+                                    }),backgroundColor:wechatPayType == 6 ? "#55b72d" :'#fff',
+                                    width:20,height:20,borderRadius:10,borderColor:"#f0f0f0",borderWidth:1,overflow:"hidden"}} >
+                                    <Image style={styles.paySelect} source={selectIcon}/>
+                                </View>
+                            </View>
 
-                        {/*</TouchableHighlight>*/}
-                    {/*}*/}
+                        </TouchableHighlight>
+                    }
 
 
 

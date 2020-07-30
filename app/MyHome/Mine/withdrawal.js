@@ -172,7 +172,7 @@ export default class Mine extends React.Component {
             return
         }
 
-        if(amount>data.availableAmount){
+        if(amount>(data.availableAmount-0)){
             Toast.info(`最多可提现${data.availableAmount}元`,1);
             return
         }
